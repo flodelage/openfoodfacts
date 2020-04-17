@@ -10,8 +10,8 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 
-sql = "DROP DATABASE IF EXISTS openfoodfacts; CREATE DATABASE openfoodfacts CHARACTER SET 'utf8'"
-mycursor.execute(sql, multi=True)
+sql = "CREATE DATABASE IF NOT EXISTS openfoodfacts"
+mycursor.execute(sql)
 
 sql = "GRANT ALL PRIVILEGES ON openfoodfacts.* TO 'root'@'localhost'"
 mycursor.execute(sql)
