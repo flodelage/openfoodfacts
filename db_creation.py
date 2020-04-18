@@ -10,12 +10,25 @@ db = mysql.connector.connect(
 
 mycursor = db.cursor()
 
-sql = "CREATE DATABASE IF NOT EXISTS openfoodfacts"
-mycursor.execute(sql)
+q_existence = "USE openfoodfacts"
+q_creation = "CREATE DATABASE openfoodfacts CHARACTER SET 'utf8' "
 
-sql = "GRANT ALL PRIVILEGES ON openfoodfacts.* TO 'root'@'localhost'"
-mycursor.execute(sql)
+# check if openfoodfacts database already exists
+try:
+    mycursor.execute(q_existence)
+    print("\n La base de données |openfoodfacts| existe déjà \n")
 
-print("\n La base de données |openfoodfacts| a bien été créée. \n")
+# if openfoodfacts database already exists
+except:
+    try:
+# try to create database
+        mycursor.execute(q_creation)
+# check if openfoodfacts database has been created
+        mycursor.execute(q_existence)   
+        print("\n La base de données |openfoodfacts| a bien été créée. \n")
+# if openfoodfacts database has not been created
+    except:
+        print("\n La base de données |openfoodfacts| n'a pas pu être créée. \n")
 
 db.commit()
+db.close()
