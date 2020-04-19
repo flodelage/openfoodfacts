@@ -62,4 +62,3 @@ query = "ALTER TABLE openfoodfacts.favorite "\
 "ADD UNIQUE KEY product_id_UNIQUE (product_id),"\
 "ADD CONSTRAINT favorite_product_fk FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE"
 mycursor.execute(query)
-
