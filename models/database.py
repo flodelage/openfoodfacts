@@ -30,18 +30,16 @@ class Database:
                 self.mycursor.execute(creation_query)
         # check if openfoodfacts database has been created
                 self.mycursor.execute(existence_query)   
-                print("\n La base de données |openfoodfacts| a bien été créée. \n")    
+                print("\n La base de données |openfoodfacts| a bien été créée \n")    
         # if openfoodfacts database has not been created
             except:
-                print("\n La base de données |openfoodfacts| n'a pas pu être créée. \n")
-        self.connection.commit()
-        self.connection.close()
+                print("\n La base de données |openfoodfacts| n'a pas pu être créée \n")
 
     def drop(self):
         drop_query = "DROP DATABASE openfoodfacts"
         try:
             self.mycursor.execute(drop_query)
-            print("\n La base de données |openfoodfacts| a bien été supprimée. \n")
+            print("\n La base de données |openfoodfacts| a bien été supprimée \n")
         except:
             mysql.connector.errors.DatabaseError: "1008 (HY000): Can't drop database 'openfoodfacts'; database doesn't exist"
-            print("\n La base de données |openfoodfacts| n'a pas pu être supprimée car elle n'existe pas. \n")
+            print("\n La base de données |openfoodfacts| n'a pas pu être supprimée car elle n'existe pas \n")
