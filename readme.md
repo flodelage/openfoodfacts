@@ -12,8 +12,8 @@ le système tente de créer la base de données
 
 le système vérifie qu'elle a bien été créée:
 
-si oui: le système indique à l'utilisateur que la base de données "openfoodfacts" a bien été créée
+si oui, le système indique à l'utilisateur que la base de données "openfoodfacts" a bien été créée
 
-si non: le système indique à l'utilisateur que la base de données "openfoodfacts" n'a pas pu être créée
+si non, le système indique à l'utilisateur que la base de données "openfoodfacts" n'a pas pu être créée
 
 
