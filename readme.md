@@ -1,5 +1,5 @@
-L'utilisateur peut lancer le programme:
-Il saisit dans la console: Python main.py
+### L'utilisateur peut lancer le programme:
+* Il saisit dans la console: Python main.py
 
 ### L'utilisateur peut créer sa base de données:
 * si la base de données "openfoodfacts" existe déjà:
