@@ -10,7 +10,7 @@ le système indique à l'utilisateur que la base de données "openfoodfacts" est
 
 le système tente de créer la base de données
 
-le système vérifie qu'elle a bien été créée
+le système vérifie qu'elle a bien été créée:
 
 si oui: le système indique à l'utilisateur que la base de données "openfoodfacts" a bien été créée
 
