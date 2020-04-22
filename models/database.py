@@ -16,17 +16,26 @@ class Database:
     
         self.cursor = self.connection.cursor()
 
+    def existence_db(self):
+        existence_query = "USE openfoodfacts"
+        try:
+            self.cursor.execute(existence_query)
+            return True
+        except:
+            mysql.connector.errors.ProgrammingError: "1049 (42000): Unknown database 'openfoodfacts'"
+            return False
+
     def create_db(self):
         existence_query = "USE openfoodfacts"
-        creation_query = "CREATE DATABASE CHARACTER SET 'utf8' "
+        creation_query = "CREATE DATABASE openfoodfacts CHARACTER SET 'utf8' "
         # if openfoodfacts already exists
         try:
             self.cursor.execute(existence_query)
             print("\n La base de données |openfoodfacts| existe déjà \n")
         # if openfoodfacts database doesn't exist
         except:
+            # try to create database
             try:
-        # try to create database
                 self.cursor.execute(creation_query)
         # check if openfoodfacts database has been created
                 self.cursor.execute(existence_query)   
@@ -36,16 +45,26 @@ class Database:
                 print("\n La base de données |openfoodfacts| n'a pas pu être créée \n")
 
     def drop_db(self):
+        existence_query = "USE openfoodfacts"
         drop_query = "DROP DATABASE openfoodfacts"
+        # try to drop database
         try:
             self.cursor.execute(drop_query)
-            print("\n La base de données |openfoodfacts| a bien été supprimée \n")
+            # check if openfoodfacts database still exists
+            try:
+                self.cursor.execute(existence_query)
+                # if openfoodfacts database still exists
+                print("\n La base de données |openfoodfacts| n'a pas été supprimée \n")
+            except:
+                # if openfoodfacts database no longer exists
+                print("\n La base de données |openfoodfacts| a été supprimée \n")
+        # database openfoodfacts can't be droped because it doesn't exists
         except:
             mysql.connector.errors.DatabaseError: "1008 (HY000): Can't drop database 'openfoodfacts'; database doesn't exist"
             print("\n La base de données |openfoodfacts| n'a pas pu être supprimée car elle n'existe pas \n")
 
-    def create_tables(self, db_name):
-        self.connection._database = db_name
+    def create_tables(self):
+        self.connection._database = "openfoodfacts"
 
         query = "CREATE TABLE openfoodfacts.product ("\
         "id INT NOT NULL AUTO_INCREMENT,"\
@@ -101,8 +120,8 @@ class Database:
         self.connection.commit()
         self.connection.close()
 
-    def data_insertion(self, db_name):
-        self.connection._database = db_name
+    def data_insertion(self):
+        self.connection._database = "openfoodfacts"
 
         request = requests.get("https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao.json")
         data = request.json()

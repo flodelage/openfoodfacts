@@ -11,29 +11,42 @@ class ProgramManager:
         run = True
         print("\n Bienvenue sur OpenFoodFacts !\n")
         while run:
-            choice = input(" 1- Déjà utilisateur ? \n"
-                           " 2- Nouvel utilisateur ? \n"
-                           " 3- Quitter \n"
-                           "\n Entrez votre choix >>> ")
-            if choice == "1":
-                db_name = input("\n Entrez le nom de votre base de données >>> ")
-                db_name = db_name.lower()
-                q = f"USE {db_name}"
-                try:
-                    self.db.cursor.execute(q)
-                    print(f"\n Bienvenue sur votre base de données |{db_name}| \n")
-                except:
-                    print(f"\n La base de données |{db_name}| n'existe pas \n")
+            # if openfoodfacts database already exists
+            if self.db.existence_db() == True:
+                choice = input(" 1- Continuer \n"
+                               " 2- Recréer la base de données \n"
+                               " 3- Supprimer la base de données \n"
+                               " 4- Quitter \n"
+                               "\n Entrez votre choix >>> ")
+                if choice == "1":
+                    pass
+                elif choice == "2":
+                    self.db.drop_db()
+                    self.db.create_db()
+                    self.db.create_tables()
+                    self.db.data_insertion()
+                elif choice == "3":
+                    self.db.drop_db()
+                elif choice == "4":
+                    run = False
+                    print("\n À bientôt !\n")
+                else:
+                    print("\n Aucun choix ne correspond à la commande saisie \n")
 
-            elif choice == "2":
-                db_name = input("\n Entrer le nom de la base de données que vous souhaitez créer >>> ")
-                db_name = db_name.lower()
-                self.db.create_db(db_name)
-                q = f"USE {db_name}"
-                print(f"\n Bienvenue sur votre base de données |{db_name}| \n")
-
-            elif choice == "3":
-                run = False
-                print(f"\n À bientôt !\n")
+            # if openfoodfacts database doen't exists                 
             else:
-                print("\n Aucun choix ne correspond à la commande saisie \n")
+                choice = input(" 1- Créer la base de données \n"
+                               " 2- Quitter \n"
+                               "\n Entrez votre choix >>> ")
+                if choice == "1":
+                    self.db.create_db()
+                    self.db.create_tables()
+                    self.db.data_insertion()
+                elif choice == "2":
+                    run = False
+                    print("\n À bientôt !\n")
+                else:
+                    print("\n Aucun choix ne correspond à la commande saisie \n")
+
+
+
