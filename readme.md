@@ -11,6 +11,9 @@ le système vérifie que la base de données a bien été supprimée
 le système tente de créer la base de données
 
 le système vérifie que la base de données a bien été créée
+
 * si la base de données "openfoodfacts" n'existe pas:
-        * le système tente de créer la base de données
-            * le système vérifie que la base de données a bien été créée
+
+le système tente de créer la base de données
+
+le système vérifie que la base de données a bien été créée
