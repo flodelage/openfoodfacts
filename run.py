@@ -1,15 +1,16 @@
 
-from models.database import Database
 import mysql.connector
+from database import Database
+from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
 
 class ProgramManager:
     def __init__(self):
-        self.db = Database("localhost", "root", "")
+        self.db = Database(DB_HOST, DB_USER, DB_PASSWD)
 
     def run(self):
         run = True
-        print("\n Bienvenue sur OpenFoodFacts !\n")
+        print(f"\n Bienvenue sur {DB_NAME.capitalize()} !\n")
         while run:
             # if openfoodfacts database already exists
             if self.db.existence_db() == True:
@@ -47,6 +48,3 @@ class ProgramManager:
                     print("\n À bientôt !\n")
                 else:
                     print("\n Aucun choix ne correspond à la commande saisie \n")
-
-
-

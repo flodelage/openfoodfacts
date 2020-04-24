@@ -26,9 +26,6 @@ type(data["products"]) --> <class 'list'>
 type(data["products"][0]) --> <class 'dict'>
 """
 
-file = open('data.json')
-data = json.load(file)
-file.close()
 
 """
 first_product = data["products"][1]
@@ -50,7 +47,7 @@ db.commit()
 print("1 record inserted, ID:", mycursor.lastrowid)
 """
 
-for product in data["products"]:
+for product in result["products"]:
     try:
         print(product['product_name'])
     except:
