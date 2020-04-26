@@ -2,7 +2,7 @@
 from settings import DB_NAME
 
 
-queries = (
+tables_queries = (
 f"CREATE TABLE {DB_NAME}.product ("\
 "id INT NOT NULL AUTO_INCREMENT,"\
 "name VARCHAR(120) NOT NULL,"\

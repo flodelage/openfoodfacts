@@ -46,7 +46,7 @@ db.commit()
 
 print("1 record inserted, ID:", mycursor.lastrowid)
 """
-
+print(result["count"], result["page_size"])
 for product in result["products"]:
     try:
         print(product['product_name'])
@@ -84,7 +84,5 @@ for product in result["products"]:
         pass
 
     print("______________________________________________")
-
-
 
 

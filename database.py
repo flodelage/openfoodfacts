@@ -59,15 +59,20 @@ class Database:
                 # if openfoodfacts database no longer exists
                 print(f"\n La base de données |{db_name}| a été supprimée \n")
         # database openfoodfacts can't be droped because it doesn't exists
-        except:
-            mysql.connector.errors.DatabaseError: f"1008 (HY000): Can't drop database '{db_name}'; database doesn't exist"
+        except mysql.connector.errors.DatabaseError:
             print(f"\n La base de données |{db_name}| n'a pas pu être supprimée car elle n'existe pas \n")
 
     def data_insertion(self):
         self.connection._database = "openfoodfacts"
 
-        pages = range(1, 7)
+        # if we want all products of a category:
+        # request = requests.get("https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao.json")
+        # data = request.json()
+        # pages_nb = round(data["count"] / data["page_size"])
+        # pages = range(pages_nb +1)
 
+        pages = range(1, 7)
+        
         for page in pages:
             request = requests.get(f"https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao/{page}.json")
             data = request.json()

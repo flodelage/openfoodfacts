@@ -2,7 +2,7 @@
 import mysql.connector
 from database import Database
 from schema import Schema
-from tables import queries
+from scripts_MySQL.tables import tables_queries
 from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
 
@@ -27,7 +27,7 @@ class ProgramManager:
                 elif choice == "2":
                     self.db.drop_db(DB_NAME)
                     self.db.create_db(DB_NAME)
-                    self.schema.create_tables(queries)
+                    self.schema.create_tables(tables_queries)
                     self.db.data_insertion()
                 elif choice == "3":
                     self.db.drop_db(DB_NAME)
@@ -44,7 +44,7 @@ class ProgramManager:
                                "\n Entrez votre choix >>> ")
                 if choice == "1":
                     self.db.create_db(DB_NAME)
-                    self.schema.create_tables(queries)
+                    self.schema.create_tables(tables_queries)
                     self.db.data_insertion()
                 elif choice == "2":
                     run = False
