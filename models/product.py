@@ -1,10 +1,12 @@
 
 
 class Product:
-    def __init__(self, id, name, brand, nutrition_grade, stores, url):
-        self.id = id
-        self.name = name
-        self.brand = brand
-        self.nutrition_grade = nutrition_grade
-        self.stores = stores
-        self.url = url
+    def __init__(self, brand=None, stores=None):
+       pass
+
+
+    def __setattr__(self, name, nutrition_grade, url, brand=None, stores=None):
+        pass
+
+
+

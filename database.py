@@ -63,6 +63,16 @@ class Database:
         except mysql.connector.errors.DatabaseError:
             print(f"\n La base de données |{db_name}| n'a pas pu être supprimée car elle n'existe pas \n")
 
+    def existing_db_connection(self, db_name):
+        self.connection._database = db_name
+    
+
+
+
+
+
+
+
     def data_insertion(self):
         self.connection._database = "openfoodfacts"
 
