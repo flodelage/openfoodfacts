@@ -13,7 +13,7 @@ class ProgramManager:
 
     def run(self):
         run = True
-        print(f"\n Bienvenue sur {DB_NAME.capitalize()} !\n")
+        print(f"\n Bienvenue sur {DB_NAME.capitalize()} ! \n")
         while run:
             # if openfoodfacts database already exists
             if self.db.existence_db(DB_NAME) == True:

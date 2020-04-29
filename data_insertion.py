@@ -2,27 +2,36 @@
 import mysql.connector
 import json
 import requests
+from database import Database
+from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
+db = Database(DB_HOST, DB_USER, DB_PASSWD)
+db.connection._database = DB_NAME
 
-db = mysql.connector.connect(
-  host = "localhost",
-  database = 'openfoodfacts',
-  user = "root",
-  passwd = ""
-)
+# if we want all products of a category:
+# request = requests.get("https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao.json")
+# data = request.json()
+# pages_nb = round(data["count"] / data["page_size"])
+# pages = range(pages_nb +1)
 
-request = requests.get("https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao.json")
-data = request.json()
+pages = range(1, 7)
 
-mycursor = db.cursor()
-
-products = data["products"]
+for page in pages:
+  request = requests.get(f"https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao/{page}.json")
+  data = request.json()
+  products = data["products"]
 
 for p in products:
-    try:
-        query = "INSERT INTO product (name, brand, nutrition_grade, stores, url) VALUES (%s, %s, %s, %s, %s)"
-        val = (p['product_name'], p['brands'], p['nutrition_grade_fr'], p['stores'], p['url'])
-        mycursor.execute(query, val)
-        db.commit()
-    except:
-        pass
+  try:
+    query = "INSERT INTO product (name, brand, nutrition_grade, stores, url) VALUES (%s, %s, %s, %s, %s)"
+    values = (p['product_name'], p['brands'], p['nutrition_grades'], p['stores'], p['url'])
+    db.cursor.execute(query, values)
+    db.connection.commit()
+
+    # categories = p['categories'].split(", ")
+    # for cat in categories:
+    #     query = f"INSERT INTO category (name) VALUES ({cat})"
+    #     self.cursor.execute(query)
+    #     self.connection.commit()  
+  except KeyError:
+    continue
