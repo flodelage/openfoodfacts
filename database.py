@@ -3,6 +3,7 @@ import mysql.connector
 import requests
 from models.product import Product
 from models.category import Category
+from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
 class Database:
     def __init__(self, host, user, passwd):
@@ -13,7 +14,8 @@ class Database:
         self.connection = mysql.connector.connect(
         host = self.host,
         user = self.user,
-        passwd = self.passwd
+        passwd = self.passwd,
+        database = DB_NAME
         )
     
         self.cursor = self.connection.cursor()
@@ -66,40 +68,3 @@ class Database:
     def existing_db_connection(self, db_name):
         self.connection._database = db_name
     
-
-
-
-
-
-
-
-    def data_insertion(self):
-        self.connection._database = "openfoodfacts"
-
-        request = requests.get("https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao.json")
-        data = request.json()
-        pages_nb = round(data["count"] / data["page_size"])
-        pages = range(pages_nb +1)
-
-        for page in pages:
-            request = requests.get(f"https://fr.openfoodfacts.org/categorie/pates-a-tartiner-aux-noisettes-et-au-cacao/{page}.json")
-            data = request.json()
-            products = data["products"]
-
-            for p in products:
-                    try:
-                        query = "INSERT INTO product (name, brand, nutrition_grade, stores, url) VALUES (%s, %s, %s, %s, %s)"
-                        values = (p['product_name'], p['brands'], p['nutrition_grades'], p['stores'], p['url'])
-                        self.cursor.execute(query, values)
-                        self.connection.commit()
-
-                        categories = p['categories'].split(", ")
-                        for cat in categories:
-                            try:
-                                query = f"INSERT INTO category (name) VALUES ('{cat}')"
-                                self.cursor.execute(query)
-                                self.connection.commit()
-                            except:
-                                continue
-                    except:
-                        continue
