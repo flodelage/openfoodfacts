@@ -1,20 +1,15 @@
 
 import mysql.connector
 import requests
-from models.product import Product
-from models.category import Category
 from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
-class Database:
-    def __init__(self, host, user, passwd):
-        self.host = host
-        self.user = user
-        self.passwd = passwd
 
+class Database:
+    def __init__(self):
         self.connection = mysql.connector.connect(
-        host = self.host,
-        user = self.user,
-        passwd = self.passwd,
+        host = DB_HOST,
+        user = DB_USER,
+        passwd = DB_PASSWD,
         database = DB_NAME
         )
     
@@ -30,7 +25,7 @@ class Database:
 
     def create_db(self, db_name):
         existence_query = f"USE {db_name}"
-        creation_query = f"CREATE DATABASE {db_name} CHARACTER SET 'utf8' "
+        creation_query = f"CREATE DATABASE {db_name} CHARACTER SET 'utf8mb4' "
         # if openfoodfacts already exists
         try:
             self.cursor.execute(existence_query)
@@ -67,4 +62,27 @@ class Database:
 
     def existing_db_connection(self, db_name):
         self.connection._database = db_name
-    
+
+    def create_schema(self, script):
+        self.connection._database = DB_NAME
+        for query in script:
+            self.cursor.execute(query)
+
+    def save(self, obj):
+        table = obj.table # store Product's private table name  p._Product.__table --> obj.__class__.__table ?????
+        params = obj.__dict__.keys() # store object's parameters
+        args = obj.__dict__.values() # store object's arguments
+        columns = ", ".join(params) # set string of params
+        values_qty = f"%s, " * len(params) # set number of "%s ," equal to the number of the object's params
+        values_qty = values_qty.strip()[:-1:] # remove ending space then ending ","
+        if len(params) == 1:
+            query = f"INSERT INTO {table} ({columns}) VALUES ('{tuple(args)[0]}')"
+            self.cursor.execute(query)
+        else: 
+            query = f"INSERT INTO {table} ({columns}) VALUES ({values_qty})"
+            values = tuple(args)
+            self.cursor.execute(query, values)
+        self.connection.commit()
+
+    def save_all(self):
+        pass

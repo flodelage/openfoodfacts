@@ -1,21 +1,38 @@
 
-import mysql.connector
 import requests
-from database import Database
-from settings import DB_HOST, DB_USER, DB_PASSWD, DB_NAME
+import json
+from settings import CATEGORIES
+from models.product import Product
+from models.category import Category
 
 
 class Requester:
     def url_to_json(self, category_name):
         request = requests.get(f"https://fr.openfoodfacts.org/categorie/{category_name}.json")
-        json_data = request.json()
-        return json_data
+        return request.json()
 
     def page_to_json(self, category_name, page):
         request = requests.get(f"https://fr.openfoodfacts.org/categorie/{category_name}/{page}.json")
-        json_data = request.json()
-        return json_data
+        return request.json()
 
     def retrieve_cat_pages_nb(self, json_data):
-        pages_nb = round(int(json_data["count"]) / json_data["page_size"])
-        return pages_nb
+        return round(int(json_data["count"]) / json_data["page_size"])
+
+    def get_data(self):
+        products_list = []
+        for category in CATEGORIES:
+            json_data = self.url_to_json(category) # store json from category url
+            pages_nb = self.retrieve_cat_pages_nb(json_data) # store the number of pages the category
+
+            for page in range(pages_nb+1):
+                json_data = self.page_to_json(category, page) # store the current page of the category
+                products = json_data["products"] # store the products of the current page
+                
+                for p in products:
+                    try:
+                        product = Product(name=p['product_name'], brand=p['brands'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], categories=p['categories'])
+                        products_list.append(product)
+                    except:
+                        continue
+                
+        return products_list

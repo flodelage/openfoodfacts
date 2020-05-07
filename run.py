@@ -1,17 +1,13 @@
 
 import mysql.connector
 from database import Database
-from schema import Schema
-from data_insertion import DataInsertion
 from scripts_MySQL.tables import tables_queries
 from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
 
 class ProgramManager:
     def __init__(self):
-        self.db = Database(DB_HOST, DB_USER, DB_PASSWD)
-        self.schema = Schema(DB_NAME)
-        self.data_insertion = DataInsertion()
+        self.db = Database()
 
     def run(self):
         run = True
@@ -29,8 +25,7 @@ class ProgramManager:
                 elif choice == "2":
                     self.db.drop_db(DB_NAME)
                     self.db.create_db(DB_NAME)
-                    self.schema.create_tables(tables_queries)
-                    self.data_insertion.insert()
+                    self.db.create_schema(tables_queries)
                 elif choice == "3":
                     self.db.drop_db(DB_NAME)
                 elif choice == "4":
@@ -46,8 +41,7 @@ class ProgramManager:
                                "\n Entrez votre choix >>> ")
                 if choice == "1":
                     self.db.create_db(DB_NAME)
-                    self.schema.create_tables(tables_queries)
-                    self.data_insertion.insert()
+                    self.db.create_schema(tables_queries)
                 elif choice == "2":
                     run = False
                     print("\n À bientôt !\n")
