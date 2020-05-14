@@ -11,8 +11,7 @@ f"CREATE TABLE {DB_NAME}.product ("\
 "stores VARCHAR(120),"\
 "url VARCHAR(255) NOT NULL,"\
 "PRIMARY KEY (id),"\
-"UNIQUE KEY name_UNIQUE (name),"\
-"UNIQUE KEY url_UNIQUE (url))"\
+"UNIQUE KEY name_UNIQUE (name))"\
 "ENGINE = INNODB",
 
 f"CREATE TABLE {DB_NAME}.category ("\

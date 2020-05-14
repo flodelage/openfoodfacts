@@ -22,7 +22,7 @@ class Requester:
     def retrieve_cat_pages_nb(self, json_data):
         return round(int(json_data["count"]) / json_data["page_size"])
 
-    def get_products(self):
+    def get_data(self):
         products_list = []
         categories_list = []
         for category in CATEGORIES:
@@ -44,12 +44,25 @@ class Requester:
                         category = Category(name=cat)
                         categories_list.append(category)
 
-        self.db.save_all(products_list)
-        self.db.save_all(categories_list)
+        return products_list, categories_list
+
+    def clean_data(self):
+        categories = self.get_data()[1]
+        cleaned_categories = []
+        categories_name = []
+
+        for cat in categories:
+            if cat.get_name() not in categories_name:
+                cleaned_categories.append(cat)
+                categories_name = [cat.get_name() for cat in cleaned_categories]
 
 
-    def get_categories(self):
-        pass
+
+
+    def insert_data(self):
+        data_to_insert = self.get_data()
+        for data in data_to_insert:
+            self.db.save_all(data)
 
 r = Requester()
-r.get_products()
+r.clear_data()
