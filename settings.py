@@ -13,5 +13,5 @@ CATEGORIES = [
     # "jambons-blancs-fumes",
     # "pains-de-mie",
     "yaourts-au-miel",
-    "knacks-industrielles",
+    # "knacks-industrielles",
 ]
