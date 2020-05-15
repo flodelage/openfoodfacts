@@ -46,23 +46,17 @@ class Requester:
 
         return products_list, categories_list
 
-    def clean_data(self):
-        categories = self.get_data()[1]
-        cleaned_categories = []
-        categories_name = []
-
-        for cat in categories:
-            if cat.get_name() not in categories_name:
-                cleaned_categories.append(cat)
-                categories_name = [cat.get_name() for cat in cleaned_categories]
-
-
-
+    def clean_data(self, objects_list):
+        cleaned_list = []
+        names = []
+        for obj in objects_list:
+            if obj.get_name() not in names:
+                cleaned_list.append(obj)
+                names = [obj.get_name() for obj in cleaned_list]
+        return cleaned_list
 
     def insert_data(self):
         data_to_insert = self.get_data()
         for data in data_to_insert:
-            self.db.save_all(data)
-
-r = Requester()
-r.clear_data()
+            cleaned_data = self.clean_data(data)
+            self.db.save_all(cleaned_data)
