@@ -92,9 +92,9 @@ class Database:
             columns = ", ".join(params) # set string of params
             values = ""
             for val in args:
-                value = f"'{val.strip()}',"
+                value = f'"{val.strip()}",'
                 values += value
-            values = f"({values[:-1:]}),"
+            values = f'({values[:-1:]}),'
             values_all += values
         values_all = values_all[:-1:]
 
