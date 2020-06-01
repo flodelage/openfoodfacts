@@ -1,10 +1,13 @@
 
 import requests
 import json
-from settings import CATEGORIES, DB_NAME
-from database import Database
+import unidecode
+
+from settings import CATEGORIES
 from models.product import Product
 from models.category import Category
+from models.product_category import ProductCategory
+from database import Database
 
 
 class Requester:
@@ -20,43 +23,37 @@ class Requester:
         return request.json()
 
     def retrieve_cat_pages_nb(self, json_data):
-        return round(int(json_data["count"]) / json_data["page_size"])
+        return round(int(json_data["count"]) / json_data["page_size"]) + 1
 
     def get_data(self):
         products_list = []
         categories_list = []
+        product_category_list = []
         for category in CATEGORIES:
             json_data = self.url_to_json(category) # store json from category url
-            pages_nb = self.retrieve_cat_pages_nb(json_data) # store the number of pages the category
+            pages_nb = self.retrieve_cat_pages_nb(json_data) # store the number of pages for the category
 
-            for page in range(pages_nb+1):
-                json_data = self.page_to_json(category, page) # store the current page of the category
-                products = json_data["products"] # store the products of the current page
+            for page in range(pages_nb):
+                page_json_data = self.page_to_json(category, page+1) # store the current page for the category
+                products = page_json_data["products"] # store the products for the current page
 
                 for p in products:
                     try:
-                        product = Product(name=p['product_name'], brand=p['brands'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'])
+                        product = Product(name=p['product_name'], brand=p['brands'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], categories=p['categories'])
                         products_list.append(product)
-                    except:
+                    except KeyError:
                         continue
-
-                    for cat in p['categories'].split(","):
-                        category = Category(name=cat)
-                        categories_list.append(category)
-
-        return products_list, categories_list
+                    for cat in product.categories:
+                        categories_list.append(cat)
+        self.db.save_all(self.clean_data(categories_list))
+        self.db.save_all(self.clean_data(products_list))
 
     def clean_data(self, objects_list):
         cleaned_list = []
         names = []
         for obj in objects_list:
-            if obj.get_name() not in names:
+            if unidecode.unidecode(obj.get_name().strip().lower()) not in names:
                 cleaned_list.append(obj)
-                names = [obj.get_name() for obj in cleaned_list]
+                names = [unidecode.unidecode(obj.get_name().strip().lower()) for obj in cleaned_list]
         return cleaned_list
 
-    def insert_data(self):
-        data_to_insert = self.get_data()
-        for data in data_to_insert:
-            cleaned_data = self.clean_data(data)
-            self.db.save_all(cleaned_data)

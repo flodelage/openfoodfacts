@@ -1,7 +1,4 @@
 
-
-
-
 class Category():
     table = "category"
     name = None
@@ -9,8 +6,10 @@ class Category():
     def __init__(self, name):
         self.name = name
 
-    def save(self, db):
-        db.save(self)
-
     def get_name(self):
         return self.name
+
+    def save(self):
+        from database import Database
+        db = Database()
+        db.save(self)

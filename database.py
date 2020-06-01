@@ -3,7 +3,6 @@ import mysql.connector
 import requests
 from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 from models.product import Product
-from models.category import Category
 
 
 class Database:
@@ -86,9 +85,13 @@ class Database:
     def save_all(self, objects_list):
         values_all = ""
         for obj in objects_list:
-            table = obj.table # store Product's table name
-            params = obj.__dict__.keys() # store object's parameters
+            if isinstance(obj, Product):
+                params = obj.__dict__.pop('categories')
+                params = obj.__dict__.keys() # store object's parameters
+            else:
+                params = obj.__dict__.keys() # store object's parameters
             args = obj.__dict__.values() # store object's arguments
+            table = obj.table # store object's table name
             columns = ", ".join(params) # set string of params
             values = ""
             for val in args:
@@ -99,9 +102,22 @@ class Database:
         values_all = values_all[:-1:]
 
         query = f"INSERT INTO {table} ({columns}) VALUES {values_all}"
-        print(query)
         self.cursor.execute(query)
         self.connection.commit()
+
+    def retrieve_id(self, obj):
+        table = obj.table # store object's table name
+        query = f"SELECT id FROM {table} WHERE name = '{obj.get_name()}'"
+        self.cursor.execute(query)
+        id = self.cursor.fetchone()
+        print(id)
+
+    def retrieve_all_id(self, obj):
+        table = obj.table # store object's table name
+        query = f"SELECT * FROM {table}"
+        self.cursor.execute(query)
+        id = self.cursor.fetchall()
+        print(id)
 
     def select_all(self, table):
         self.cursor.execute(f"SELECT name FROM {table}")

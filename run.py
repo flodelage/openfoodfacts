@@ -30,7 +30,7 @@ class ProgramManager:
                     self.db.drop_db(DB_NAME)
                     self.db.create_db(DB_NAME)
                     self.db.create_schema(tables_queries)
-                    self.req.insert_data()
+                    self.req.get_data()
                 elif choice == "3":
                     self.db.drop_db(DB_NAME)
                 elif choice == "4":
@@ -47,7 +47,7 @@ class ProgramManager:
                 if choice == "1":
                     self.db.create_db(DB_NAME)
                     self.db.create_schema(tables_queries)
-                    self.req.insert_data()
+                    self.req.get_data()
                 elif choice == "2":
                     run = False
                     print("\n À bientôt !\n")
