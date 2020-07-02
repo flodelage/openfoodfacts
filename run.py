@@ -107,30 +107,33 @@ class ProgramManager:
                         self.db.cursor.execute(query)
                         for prod in self.db.cursor.fetchall():
                             all_better_products.append(prod)
-                    print("Voici le substitut que nous vous proposons:")
-                    substitute_name = random.choice(all_better_products)[0]
-                    # . display the substitute
-                    print(substitute_name)
-                    # Save the substitute:
-                    self.interface.save_substitute_menu()
-                    choice = self.interface.prompt_choice()
-                    if choice == "1":
-                        # . retrieve product id
-                        query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{product_name}'"""
-                        self.db.cursor.execute(query)
-                        product_id = self.db.cursor.fetchone()[0]
-                        # . retrieve substitute id
-                        query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{substitute_name}'"""
-                        self.db.cursor.execute(query)
-                        substitute_id = self.db.cursor.fetchone()[0]
-                        # . save the substitute
-                        query = f"""INSERT INTO substitute (product_id, substitute_id) VALUES ('{product_id}', '{substitute_id}')"""
-                        self.db.cursor.execute(query)
-                        self.db.connection.commit()
-                    elif choice == "2":
-                        pass
+                    if all_better_products:
+                        print("Voici le substitut que nous vous proposons:")
+                        substitute_name = random.choice(all_better_products)[0]
+                        # . display the substitute
+                        print(substitute_name)
+                        # Save the substitute:
+                        self.interface.save_substitute_menu()
+                        choice = self.interface.prompt_choice()
+                        if choice == "1":
+                            # . retrieve product id
+                            query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{product_name}'"""
+                            self.db.cursor.execute(query)
+                            product_id = self.db.cursor.fetchone()[0]
+                            # . retrieve substitute id
+                            query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{substitute_name}'"""
+                            self.db.cursor.execute(query)
+                            substitute_id = self.db.cursor.fetchone()[0]
+                            # . save the substitute
+                            query = f"""INSERT INTO substitute (product_id, substitute_id) VALUES ('{product_id}', '{substitute_id}')"""
+                            self.db.cursor.execute(query)
+                            self.db.connection.commit()
+                        elif choice == "2":
+                            pass
+                        else:
+                            self.interface.choice_error()
                     else:
-                        self.interface.choice_error()
+                        print("Nous n'avons trouvé aucun produit ayant un meilleur nutriscore !")
             elif choice == "2":
                 """[SEE SAVED SUBSTITUTES]"""
                 query = "SELECT product.name FROM product INNER JOIN substitute ON substitute.substitute_id = product.id"
