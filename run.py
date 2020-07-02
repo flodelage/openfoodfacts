@@ -1,7 +1,8 @@
 
 import random
-
 from database import Database
+
+import mysql.connector
 from requester import Requester
 from interface import Interface
 from models.category import Category
@@ -126,8 +127,11 @@ class ProgramManager:
                             substitute_id = self.db.cursor.fetchone()[0]
                             # . save the substitute
                             query = f"""INSERT INTO substitute (product_id, substitute_id) VALUES ('{product_id}', '{substitute_id}')"""
-                            self.db.cursor.execute(query)
-                            self.db.connection.commit()
+                            try:
+                                self.db.cursor.execute(query)
+                                self.db.connection.commit()
+                            except:
+                                print(f"Vous avez déjà sauvegardé ce substitut pour le produit {product_name}")
                         elif choice == "2":
                             pass
                         else:
@@ -179,9 +183,8 @@ class ProgramManager:
                         # continue
                         pass
                     elif choice == "2":
-                        # delete the selected substitute
+                        # Delete the selected substitute
                         query = f"DELETE FROM substitute WHERE substitute_id = {substitute_id} AND product_id = {product_id}"
-                        print(query)
                         self.db.cursor.execute(query)
                         self.db.connection.commit()
                     else:

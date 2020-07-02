@@ -118,43 +118,6 @@ class Database:
         for _ in self.cursor.execute(queries, multi=True): pass
         self.connection.commit()
 
-        # requetes = []
-        # pour objet dans product_list:
-        #     noms=""
-        #     values = ''
-        #     boucler sur les attributs
-        #         si la valeur est une liste:
-        #             pour chaque objet de la liste:
-        #                 Recuperer le nom de l'attribut et le mettre dans les noms_secondaires
-        #                 recuperer le nom des valeurs et les mettre dans values_secondaires
-        #                 recuperer le nom de la table
-        #                 Generer la requete
-        #         recuperer le nom de l'attributs et les mettre dans les noms
-        #         recuperer les valeurs et les mettre dans les values
-        #     recuperer la table
-        #     Monter la requete: "insert into STRING values STRING"
-        #     ajouter dans liste de requetes
-        # Creer la requete string a partir du tableau
-        # Executer la requete multiple
-
-
-        # values_all = ""
-        # for obj in objects_list:
-        #     params = obj.__dict__.keys() # store object's parameters
-        #     args = obj.__dict__.values() # store object's arguments
-        #     table = obj.table # store object's table name
-        #     columns = ", ".join(params) # set string of params
-        #     values = ""
-        #     for val in args:
-        #         value = f'"{val.strip()}",'
-        #         values += value
-        #     values = f'({values[:-1:]}),'
-        #     values_all += values
-        # values_all = values_all[:-1:]
-        # query = f"INSERT IGNORE INTO {table} ({columns}) VALUES {values_all}"
-        # self.cursor.execute(query)
-        # self.connection.commit()
-
     """SELECT QUERIES"""
     def retrieve_id(self, obj):
         table = obj.table # store object's table name
