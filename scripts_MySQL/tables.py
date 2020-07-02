@@ -28,8 +28,8 @@ f"CREATE TABLE {DB_NAME}.substitute ("\
 "ENGINE = INNODB",
 
 f"CREATE TABLE {DB_NAME}.product_category ("\
-"category_id INT NOT NULL,"\
 "product_id INT NOT NULL,"\
+"category_id INT NOT NULL,"\
 "PRIMARY KEY (category_id, product_id))"\
 "ENGINE = INNODB",
 

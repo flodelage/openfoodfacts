@@ -27,8 +27,6 @@ class Requester:
 
     def get_data(self):
         products_list = []
-        categories_list = []
-        product_category_list = []
         for category in CATEGORIES:
             json_data = self.url_to_json(category) # store json from category url
             pages_nb = self.retrieve_cat_pages_nb(json_data) # store the number of pages for the category
@@ -43,9 +41,6 @@ class Requester:
                         products_list.append(product)
                     except KeyError:
                         continue
-                    for cat in product.categories:
-                        categories_list.append(cat)
-        self.db.save_all(self.clean_data(categories_list))
         self.db.save_all(self.clean_data(products_list))
 
     def clean_data(self, objects_list):
@@ -56,4 +51,3 @@ class Requester:
                 cleaned_list.append(obj)
                 names = [unidecode.unidecode(obj.get_name().strip().lower()) for obj in cleaned_list]
         return cleaned_list
-

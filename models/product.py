@@ -1,5 +1,7 @@
 
+import unidecode
 from models.category import Category
+
 
 class Product:
     table = "product"
@@ -18,6 +20,8 @@ class Product:
         self.categories = []
         for cat in categories.split(","): # on découpe la string pour récupérer chaque catégorie
             self.categories.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
+    def __str__(self):
+        return f"*** {self.name} *** brand: {self.brand} nutriscore: {self.nutrition_grade} stores: {self.stores} url: {self.url}"
 
     def get_name(self):
         return self.name
@@ -33,6 +37,9 @@ class Product:
 
     def get_url(self):
         return self.url
+
+    def get_categories(self):
+        return self.categories
 
     def save(self):
         from database import Database

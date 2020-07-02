@@ -14,7 +14,7 @@ class Database:
         database= DB_NAME
         )
         self.connection._database = DB_NAME
-        self.cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor(buffered=True)
 
     def existence_db(self, db_name):
         existence_query = f"USE {db_name}"
@@ -83,43 +83,108 @@ class Database:
         self.connection.commit()
 
     def save_all(self, objects_list):
-        values_all = ""
+        queries = []
         for obj in objects_list:
-            if isinstance(obj, Product):
-                params = obj.__dict__.pop('categories')
-                params = obj.__dict__.keys() # store object's parameters
-            else:
-                params = obj.__dict__.keys() # store object's parameters
-            args = obj.__dict__.values() # store object's arguments
-            table = obj.table # store object's table name
-            columns = ", ".join(params) # set string of params
+            columns = ""
             values = ""
-            for val in args:
-                value = f'"{val.strip()}",'
-                values += value
-            values = f'({values[:-1:]}),'
-            values_all += values
-        values_all = values_all[:-1:]
+            for attribute in obj.__dict__.keys():
+                if type(obj.__dict__[attribute]) is list:
+                    for obj in obj.__dict__[attribute]:
+                        columns_secondary = ""
+                        values_secondary = ""
+                        # set values
+                        args = obj.__dict__.values()
+                        for val in args:
+                            values_secondary += f""""{val.strip()}","""
+                        values_secondary = values_secondary[:-1:]
+                        # set columns
+                        columns_secondary = ", ".join(obj.__dict__.keys())
+                        # set table
+                        table_secondary = obj.table
+                        # set the query
+                        query = f"""INSERT IGNORE INTO {table_secondary} ({columns_secondary}) VALUES ({values_secondary})"""
+                        queries.append(query)
+                else:
+                    # set object's table:
+                    table = obj.table
+                    # set object's columns:
+                    columns += attribute + "," # add each attribute to the columns string
+                    # set object's values:
+                    values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+            query = f"""INSERT IGNORE INTO {table} ({columns[:-1:]}) VALUES ({values[:-1:]})"""
+            queries.append(query)
 
-        query = f"INSERT INTO {table} ({columns}) VALUES {values_all}"
-        self.cursor.execute(query)
+        queries = '; '.join(queries) # convert list into string
+        for _ in self.cursor.execute(queries, multi=True): pass
         self.connection.commit()
 
+        # requetes = []
+        # pour objet dans product_list:
+        #     noms=""
+        #     values = ''
+        #     boucler sur les attributs
+        #         si la valeur est une liste:
+        #             pour chaque objet de la liste:
+        #                 Recuperer le nom de l'attribut et le mettre dans les noms_secondaires
+        #                 recuperer le nom des valeurs et les mettre dans values_secondaires
+        #                 recuperer le nom de la table
+        #                 Generer la requete
+        #         recuperer le nom de l'attributs et les mettre dans les noms
+        #         recuperer les valeurs et les mettre dans les values
+        #     recuperer la table
+        #     Monter la requete: "insert into STRING values STRING"
+        #     ajouter dans liste de requetes
+        # Creer la requete string a partir du tableau
+        # Executer la requete multiple
+
+
+        # values_all = ""
+        # for obj in objects_list:
+        #     params = obj.__dict__.keys() # store object's parameters
+        #     args = obj.__dict__.values() # store object's arguments
+        #     table = obj.table # store object's table name
+        #     columns = ", ".join(params) # set string of params
+        #     values = ""
+        #     for val in args:
+        #         value = f'"{val.strip()}",'
+        #         values += value
+        #     values = f'({values[:-1:]}),'
+        #     values_all += values
+        # values_all = values_all[:-1:]
+        # query = f"INSERT IGNORE INTO {table} ({columns}) VALUES {values_all}"
+        # self.cursor.execute(query)
+        # self.connection.commit()
+
+    """SELECT QUERIES"""
     def retrieve_id(self, obj):
         table = obj.table # store object's table name
         query = f"SELECT id FROM {table} WHERE name = '{obj.get_name()}'"
         self.cursor.execute(query)
-        id = self.cursor.fetchone()
-        print(id)
+        result = self.cursor.fetchone()[0]
+        return result
 
-    def retrieve_all_id(self, obj):
+    def retrieve_ids(self, obj):
+        table = obj.table # store object's table name
+        query = f"SELECT id FROM {table}"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        return result
+
+    def retrieve_all(self, obj):
         table = obj.table # store object's table name
         query = f"SELECT * FROM {table}"
         self.cursor.execute(query)
-        id = self.cursor.fetchall()
-        print(id)
+        result = self.cursor.fetchall()
+        return result
 
-    def select_all(self, table):
-        self.cursor.execute(f"SELECT name FROM {table}")
+    def retrieve_columns(self, obj):
+        table = obj.table # store object's table name
+        query = f"SELECT name, id FROM {table}"
+        self.cursor.execute(query)
+        result = self.cursor.fetchall()
+        return result
+
+    def select_all(self, cls):
+        self.cursor.execute(f"SELECT name FROM {cls.table}")
         result = self.cursor.fetchall()
         return result

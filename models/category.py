@@ -1,10 +1,13 @@
 
+import unidecode
+
+
 class Category():
     table = "category"
     name = None
 
     def __init__(self, name):
-        self.name = name
+        self.name = name.replace("'", " ")
 
     def get_name(self):
         return self.name
