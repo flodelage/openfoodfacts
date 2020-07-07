@@ -5,7 +5,7 @@ from database import Database
 import mysql.connector
 from requester import Requester
 from interface import Interface
-from models.category import Category
+from models.entities.category import Category
 from scripts_MySQL.tables import tables_queries
 from settings import DB_NAME, NUTRITION_GRADES
 
@@ -54,10 +54,12 @@ class ProgramManager:
                     self.interface.goodbye(DB_NAME)
                 else:
                     self.interface.choice_error()
+            self.interface.split()
 
             """[SUBSTITUTES MENU]"""
             self.interface.find_or_see_substitute_menu()
             choice = self.interface.prompt_choice()
+            self.interface.split()
             if choice == "1":
                 """[FIND A SUBSTITUTE]"""
                 # Display all categories:
@@ -68,6 +70,7 @@ class ProgramManager:
                 print("\n Sélectionnez une catégorie: \n")
                 self.interface.show_enumerate_list(categories_dict)
                 choice = self.interface.prompt_choice()
+                self.interface.split()
                 # Display all products in the choosen category:
                 query = f"SELECT product.name FROM product INNER JOIN product_category On product_category.product_id = product.id INNER JOIN category ON product_category.category_id = category.id WHERE category.name = '{categories_dict[int(choice)]}'"
                 self.db.cursor.execute(query)
@@ -78,6 +81,7 @@ class ProgramManager:
                 print("\n Sélectionnez un produit: \n")
                 self.interface.show_enumerate_list(products_dict)
                 choice = self.interface.prompt_choice()
+                self.interface.split()
                 # Display the choosen product:
                 print(products_dict[int(choice)])
                 query = f"SELECT name FROM product WHERE product.name = '{products_dict[int(choice)]}'"
@@ -116,6 +120,7 @@ class ProgramManager:
                         # Save the substitute:
                         self.interface.save_substitute_menu()
                         choice = self.interface.prompt_choice()
+                        self.interface.split()
                         if choice == "1":
                             # . retrieve product id
                             query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{product_name}'"""
@@ -153,6 +158,7 @@ class ProgramManager:
                         substitutes_dict[num+1] = subst_name[0]
                     self.interface.show_enumerate_list(substitutes_dict)
                     choice = self.interface.prompt_choice()
+                    self.interface.split()
                     if int(choice) in substitutes_dict.keys():
                         # Display a substitute and the substituted product:
                         # - the substitute:
@@ -177,6 +183,7 @@ class ProgramManager:
                         """[MANAGE SAVED SUBSTITUTES]"""
                         self.interface.substitutes_management_menu()
                         choice = self.interface.prompt_choice()
+                        self.interface.split()
                     else:
                         self.interface.choice_error()
                     if choice == "1":

@@ -4,9 +4,8 @@ import json
 import unidecode
 
 from settings import CATEGORIES
-from models.product import Product
-from models.category import Category
-from models.product_category import ProductCategory
+from models.entities.product import Product
+from models.entities.category import Category
 from database import Database
 
 

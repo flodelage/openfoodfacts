@@ -54,3 +54,6 @@ class Interface:
 
     def choice_error(self):
         print("\n Aucun choix ne correspond à la commande saisie ! \n")
+
+    def split(self):
+        print("--------------------------------------------------------------------------------------------------------")

@@ -1,6 +1,6 @@
 
 import unidecode
-from models.category import Category
+from models.entities.category import Category
 
 
 class Product:
