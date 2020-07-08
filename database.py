@@ -88,15 +88,12 @@ class Database:
             obj_values = ""
             for attribute in obj.__dict__.keys():
                 if type(obj.__dict__[attribute]) is not list:
-                    if isinstance(obj.__dict__[attribute], Manager):
-                        pass
-                    else:
-                        # set object's table:
-                        obj_table = obj.table
-                        # set object's columns:
-                        obj_columns += attribute + "," # add each attribute to the columns string
-                        # set object's values:
-                        obj_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+                    # set object's table:
+                    obj_table = obj.table
+                    # set object's columns:
+                    obj_columns += attribute + "," # add each attribute to the columns string
+                    # set object's values:
+                    obj_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
             obj_insertion = f"""INSERT IGNORE INTO {obj_table} ({obj_columns[:-1:]}) VALUES ({obj_values[:-1:]})"""
             self.cursor.execute(obj_insertion)
             obj_id = "SET @obj_id = LAST_INSERT_ID()"
@@ -108,17 +105,13 @@ class Database:
                         obj_2nd_columns = ""
                         obj_2nd_values = ""
                         for attribute in obj.__dict__.keys():
-                            if isinstance(obj.__dict__[attribute], Manager):
-                                pass
-                            else:
-                                # set object's table:
-                                obj_2nd_table = obj.table
-                                # set object's columns:
-                                obj_2nd_columns += attribute + "," # add each attribute to the columns string
-                                # set object's values:
-                                obj_2nd_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+                            # set object's table:
+                            obj_2nd_table = obj.table
+                            # set object's columns:
+                            obj_2nd_columns += attribute + "," # add each attribute to the columns string
+                            # set object's values:
+                            obj_2nd_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
                         obj_2nd_insertion = f"""INSERT IGNORE INTO {obj_2nd_table} ({obj_2nd_columns[:-1:]}) VALUES ({obj_2nd_values[:-1:]})"""
-                        print(obj_2nd_insertion)
                         self.cursor.execute(obj_2nd_insertion)
                         obj_2nd_id = "SET @obj_2nd_id = LAST_INSERT_ID()"
                         self.cursor.execute(obj_2nd_id)
