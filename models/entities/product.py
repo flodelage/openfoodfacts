@@ -1,17 +1,18 @@
 
 import unidecode
 from models.entities.category import Category
+from models.manager import Manager
 
 
-class Product:
+class Product():
     table = "product"
     name = None
     brand = None
     nutrition_grade = None
     stores = None
     url = None
-
     def __init__(self, name, brand, nutrition_grade, stores, url, categories):
+        self.objects = Manager()
         self.name = name
         self.brand = brand
         self.nutrition_grade = nutrition_grade

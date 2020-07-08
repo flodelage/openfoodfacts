@@ -81,20 +81,22 @@ class Database:
             self.cursor.execute(query, values)
         self.connection.commit()
 
-
-
     def save_all(self, objects_list):
+        from models.manager import Manager
         for obj in objects_list:
             obj_columns = ""
             obj_values = ""
             for attribute in obj.__dict__.keys():
                 if type(obj.__dict__[attribute]) is not list:
-                    # set object's table:
-                    obj_table = obj.table
-                    # set object's columns:
-                    obj_columns += attribute + "," # add each attribute to the columns string
-                    # set object's values:
-                    obj_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+                    if isinstance(obj.__dict__[attribute], Manager):
+                        pass
+                    else:
+                        # set object's table:
+                        obj_table = obj.table
+                        # set object's columns:
+                        obj_columns += attribute + "," # add each attribute to the columns string
+                        # set object's values:
+                        obj_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
             obj_insertion = f"""INSERT IGNORE INTO {obj_table} ({obj_columns[:-1:]}) VALUES ({obj_values[:-1:]})"""
             self.cursor.execute(obj_insertion)
             obj_id = "SET @obj_id = LAST_INSERT_ID()"
@@ -105,23 +107,24 @@ class Database:
                     for obj in obj.__dict__[attribute]:
                         obj_2nd_columns = ""
                         obj_2nd_values = ""
-                        # set values
-                        obj_2nd_args = obj.__dict__.values()
-                        for val in obj_2nd_args:
-                            obj_2nd_values += f""""{val.strip()}","""
-                        obj_2nd_values = obj_2nd_values[:-1:]
-                        # set columns
-                        obj_2nd_columns = ", ".join(obj.__dict__.keys())
-                        # set table
-                        obj_2nd_table = obj.table
-                        # set the query
-                        obj_2nd_insertion = f"""INSERT IGNORE INTO {obj_2nd_table} ({obj_2nd_columns}) VALUES ({obj_2nd_values})"""
+                        for attribute in obj.__dict__.keys():
+                            if isinstance(obj.__dict__[attribute], Manager):
+                                pass
+                            else:
+                                # set object's table:
+                                obj_2nd_table = obj.table
+                                # set object's columns:
+                                obj_2nd_columns += attribute + "," # add each attribute to the columns string
+                                # set object's values:
+                                obj_2nd_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+                        obj_2nd_insertion = f"""INSERT IGNORE INTO {obj_2nd_table} ({obj_2nd_columns[:-1:]}) VALUES ({obj_2nd_values[:-1:]})"""
+                        print(obj_2nd_insertion)
                         self.cursor.execute(obj_2nd_insertion)
                         obj_2nd_id = "SET @obj_2nd_id = LAST_INSERT_ID()"
                         self.cursor.execute(obj_2nd_id)
                         # set many_to_many table
                         m_to_m_table = f"{obj_table}_{obj_2nd_table}"
-                        m_to_m_insertion = f"""INSERT IGNORE INTO {m_to_m_table} ({obj_table}_id, {obj_2nd_table}_id) VALUES (@obj_id,@obj_2nd_id)"""
+                        m_to_m_insertion = f"""INSERT IGNORE INTO {m_to_m_table} ({obj_table}_id, {obj_2nd_table}_id) VALUES (@obj_id, @obj_2nd_id)"""
                         self.cursor.execute(m_to_m_insertion)
         self.connection.commit()
 
