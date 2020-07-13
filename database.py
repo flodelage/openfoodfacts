@@ -65,92 +65,14 @@ class Database:
         for query in script:
             self.cursor.execute(query)
 
-    def save(self, obj):
-        table = obj.table # store Product's table name
-        params = obj.__dict__.keys() # store object's parameters
-        args = obj.__dict__.values() # store object's arguments
-        columns = ", ".join(params) # set string of params
-        values_qty = f"%s, " * len(params) # set number of "%s ," equal to the number of the object's params
-        values_qty = values_qty.strip()[:-1:] # remove ending space then ending ","
-        if len(params) == 1:
-            query = f"INSERT INTO {table} ({columns}) VALUES ('{tuple(args)[0]}')"
-            self.cursor.execute(query)
-        else:
-            query = f"INSERT INTO {table} ({columns}) VALUES ({values_qty})"
-            values = tuple(args)
-            self.cursor.execute(query, values)
-        self.connection.commit()
+    # """QUERIES"""
 
-    def save_all(self, objects_list):
-        from models.manager import Manager
-        for obj in objects_list:
-            obj_columns = ""
-            obj_values = ""
-            for attribute in obj.__dict__.keys():
-                if type(obj.__dict__[attribute]) is not list:
-                    # set object's table:
-                    obj_table = obj.table
-                    # set object's columns:
-                    obj_columns += attribute + "," # add each attribute to the columns string
-                    # set object's values:
-                    obj_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
-            obj_insertion = f"""INSERT IGNORE INTO {obj_table} ({obj_columns[:-1:]}) VALUES ({obj_values[:-1:]})"""
-            self.cursor.execute(obj_insertion)
-            obj_id = "SET @obj_id = LAST_INSERT_ID()"
-            self.cursor.execute(obj_id)
+    # def all(self, cls):
 
-            for attribute in obj.__dict__.keys():
-                if type(obj.__dict__[attribute]) is list:
-                    for obj in obj.__dict__[attribute]:
-                        obj_2nd_columns = ""
-                        obj_2nd_values = ""
-                        for attribute in obj.__dict__.keys():
-                            # set object's table:
-                            obj_2nd_table = obj.table
-                            # set object's columns:
-                            obj_2nd_columns += attribute + "," # add each attribute to the columns string
-                            # set object's values:
-                            obj_2nd_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
-                        obj_2nd_insertion = f"""INSERT IGNORE INTO {obj_2nd_table} ({obj_2nd_columns[:-1:]}) VALUES ({obj_2nd_values[:-1:]})"""
-                        self.cursor.execute(obj_2nd_insertion)
-                        obj_2nd_id = "SET @obj_2nd_id = LAST_INSERT_ID()"
-                        self.cursor.execute(obj_2nd_id)
-                        # set many_to_many table
-                        m_to_m_table = f"{obj_table}_{obj_2nd_table}"
-                        m_to_m_insertion = f"""INSERT IGNORE INTO {m_to_m_table} ({obj_table}_id, {obj_2nd_table}_id) VALUES (@obj_id, @obj_2nd_id)"""
-                        self.cursor.execute(m_to_m_insertion)
-        self.connection.commit()
 
-    """SELECT QUERIES"""
-    def retrieve_id(self, obj):
-        table = obj.table # store object's table name
-        query = f"SELECT id FROM {table} WHERE name = '{obj.get_name()}'"
-        self.cursor.execute(query)
-        result = self.cursor.fetchone()[0]
-        return result
-
-    def retrieve_ids(self, obj):
-        table = obj.table # store object's table name
-        query = f"SELECT id FROM {table}"
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        return result
-
-    def retrieve_all(self, obj):
-        table = obj.table # store object's table name
-        query = f"SELECT * FROM {table}"
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        return result
-
-    def retrieve_columns(self, obj):
-        table = obj.table # store object's table name
-        query = f"SELECT name, id FROM {table}"
-        self.cursor.execute(query)
-        result = self.cursor.fetchall()
-        return result
-
-    def select_all(self, cls):
-        self.cursor.execute(f"SELECT name FROM {cls.table}")
-        result = self.cursor.fetchall()
-        return result
+    # def filter(self, cls, column, value):
+    #     query = f"""SELECT * FROM {cls.__name__} WHERE {column} = '{value}'"""
+    #     print(query)
+    #     self.cursor.execute(query)
+    #     self.cursor.close()
+    #     return self.cursor.fetchone()

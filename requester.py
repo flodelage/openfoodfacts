@@ -6,12 +6,12 @@ import unidecode
 from settings import CATEGORIES
 from models.entities.product import Product
 from models.entities.category import Category
-from database import Database
+from models.manager import Manager
 
 
 class Requester:
     def __init__(self):
-        self.db = Database()
+        self.manager = Manager()
 
     def url_to_json(self, category_name):
         request = requests.get(f"https://fr.openfoodfacts.org/categorie/{category_name}.json")
@@ -40,7 +40,7 @@ class Requester:
                         products_list.append(product)
                     except KeyError:
                         continue
-        self.db.save_all(self.clean_data(products_list))
+        self.manager.save_all(self.clean_data(products_list))
 
     def clean_data(self, objects_list):
         cleaned_list = []
