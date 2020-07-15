@@ -35,7 +35,7 @@ class Manager():
                     # set object's columns:
                     obj_columns += attribute + "," # add each attribute to the columns string
                     # set object's values:
-                    obj_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+                    obj_values += f""" "{obj.__dict__[attribute].strip()}" """ + "," # add each value to the values string
                 else:
                     obj_insertion = f"""INSERT INTO {obj_table} ({obj_columns[:-1:]}) VALUES ({obj_values[:-1:]})"""
                     self.db.cursor.execute(obj_insertion)
@@ -50,8 +50,9 @@ class Manager():
                             # set object's columns:
                             obj_2nd_columns += attribute + "," # add each attribute to the columns string
                             # set object's values:
-                            obj_2nd_values += f""" "{obj.__dict__[attribute]}" """ + "," # add each value to the values string
+                            obj_2nd_values += f""" "{obj.__dict__[attribute].strip()}" """ + "," # add each value to the values string
                         obj_2nd_insertion = f"""INSERT INTO {obj_2nd_table} ({obj_2nd_columns[:-1:]}) VALUES ({obj_2nd_values[:-1:]}) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)"""
+                        print(obj_2nd_insertion)
                         self.db.cursor.execute(obj_2nd_insertion)
                         obj_2nd_id = "SET @obj_2nd_id = LAST_INSERT_ID()"
                         self.db.cursor.execute(obj_2nd_id)
@@ -63,22 +64,35 @@ class Manager():
 
     @classmethod
     def all(cls, parent_class):
-        query = f"""SELECT * FROM {parent_class.__name__}"""
+        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parent_class.__name__}'"""
         cls.db.cursor.execute(query)
-        result = cls.db.cursor.fetchall()
+        parent_class_cols = cls.db.cursor.fetchall() #[('id',), ('name',)]
+        cols = ""
+        for col in parent_class_cols:
+            cols += col[0] + ","
+
+        query = f"""SELECT {cols[:-1:]} FROM {parent_class.__name__}"""
+        cls.db.cursor.execute(query)
+        result = cls.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
+
         objects = []
         for row in result:
-            obj = parent_class(name=row[1])
-            obj.id = row[0]
+            id = row[0]
+            values = ",".join(row[-1:])
+            obj = parent_class(values)
+            obj.id = id
             objects.append(obj)
         return objects
 
     @classmethod
     def filter(cls, parent_class, column, value):
-        result = cls.db.cursor.fetchall()
-        objects = []
-        for row in result:
-            obj = parent_class(name=row[1])
-            obj.id = row[0]
-            objects.append(obj)
-        return objects
+        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parent_class.__name__}'"""
+        cls.db.cursor.execute(query)
+        parent_class_cols = cls.db.cursor.fetchall() #[('id',), ('name',)]
+        cols = ""
+        for col in parent_class_cols:
+            cols += col[0] + ","
+
+        query = f"""SELECT {cols[:-1:]} FROM {parent_class.__name__} WHERE {column} = '{value}'"""
+        cls.db.cursor.execute(query)
+        return cls.db.cursor.fetchall()

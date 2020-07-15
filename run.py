@@ -63,7 +63,9 @@ class ProgramManager:
             if choice == "1":
                 """[FIND A SUBSTITUTE]"""
                 # Display all categories:
-                categories = self.db.select_all(Category)
+                categories = Category.objects.all(Category)
+                for num, cat in enumerate(categories):
+                    print(num+1, cat.name)
                 categories_dict = {}
                 for num, cat_name in enumerate(categories):
                     categories_dict[num+1] = cat_name[0]

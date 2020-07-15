@@ -2,7 +2,7 @@
 from models.entities.product import Product
 from models.entities.category import Category
 
-cats=Category.objects.all(Category)
+cats = Product.objects.filter(Product)
 print(cats)
 
 

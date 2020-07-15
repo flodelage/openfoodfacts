@@ -64,15 +64,3 @@ class Database:
         self.connection._database = DB_NAME
         for query in script:
             self.cursor.execute(query)
-
-    # """QUERIES"""
-
-    # def all(self, cls):
-
-
-    # def filter(self, cls, column, value):
-    #     query = f"""SELECT * FROM {cls.__name__} WHERE {column} = '{value}'"""
-    #     print(query)
-    #     self.cursor.execute(query)
-    #     self.cursor.close()
-    #     return self.cursor.fetchone()
