@@ -4,7 +4,6 @@ from models.manager import Manager
 
 
 class Category():
-    objects = Manager()
     table = "category"
     name = None
 
@@ -18,6 +17,7 @@ class Category():
         return self.name
 
     def save(self):
-        from database import Database
-        db = Database()
-        db.save(self)
+        manager = Manager(self)
+        manager.save(self)
+
+Category.objects = Manager(Category)

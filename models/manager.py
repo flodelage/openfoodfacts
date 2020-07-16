@@ -3,10 +3,9 @@ from database import Database
 
 
 class Manager():
-    db = Database()
-
-    def __init__(self):
-        pass
+    def __init__(self, parent_class):
+        self.parent_class = parent_class
+        self.db = Database()
 
     def save(self, obj):
         table = obj.table # store Product's table name
@@ -62,37 +61,49 @@ class Manager():
                         self.db.cursor.execute(m_to_m_insertion)
         self.db.connection.commit()
 
-    @classmethod
-    def all(cls, parent_class):
-        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parent_class.__name__}'"""
-        cls.db.cursor.execute(query)
-        parent_class_cols = cls.db.cursor.fetchall() #[('id',), ('name',)]
+    def columns(self):
+        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{self.parent_class.__name__}'"""
+        self.db.cursor.execute(query)
+        parent_class_cols = self.db.cursor.fetchall() #[('id',), ('name',)]
+        return parent_class_cols
+
+    def all(self):
+        parent_class_cols = self.columns() #[('id',), ('name',)]
         cols = ""
         for col in parent_class_cols:
             cols += col[0] + ","
 
-        query = f"""SELECT {cols[:-1:]} FROM {parent_class.__name__}"""
-        cls.db.cursor.execute(query)
-        result = cls.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
+        query = f"""SELECT {cols[:-1:]} FROM {self.parent_class.__name__}"""
+        self.db.cursor.execute(query)
+        result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
 
         objects = []
         for row in result:
             id = row[0]
             values = ",".join(row[-1:])
-            obj = parent_class(values)
+            obj = self.parent_class(values)
             obj.id = id
             objects.append(obj)
         return objects
 
-    @classmethod
-    def filter(cls, parent_class, column, value):
-        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{parent_class.__name__}'"""
-        cls.db.cursor.execute(query)
-        parent_class_cols = cls.db.cursor.fetchall() #[('id',), ('name',)]
+    def filter(self, column, value):
+        parent_class_cols = self.columns() #[('id',), ('name',)]
+        cols = ""
+        for col in parent_class_cols:
+            cols += col[0] + ","
         cols = ""
         for col in parent_class_cols:
             cols += col[0] + ","
 
-        query = f"""SELECT {cols[:-1:]} FROM {parent_class.__name__} WHERE {column} = '{value}'"""
-        cls.db.cursor.execute(query)
-        return cls.db.cursor.fetchall()
+        query = f"""SELECT {cols[:-1:]} FROM {self.parent_class.__name__} WHERE {column} = '{value}'"""
+        self.db.cursor.execute(query)
+        result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
+
+        objects = []
+        for row in result:
+            id = row[0]
+            values = ",".join(row[-1:])
+            obj = self.parent_class(values)
+            obj.id = id
+            objects.append(obj)
+        return objects

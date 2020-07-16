@@ -5,13 +5,13 @@ from models.manager import Manager
 
 
 class Product():
-    objects = Manager()
     table = "product"
     name = None
     brand = None
     nutrition_grade = None
     stores = None
     url = None
+    categories = []
 
     def __init__(self, name, brand, nutrition_grade, stores, url, categories):
         self.name = name
@@ -45,6 +45,7 @@ class Product():
         return self.categories
 
     def save(self):
-        from database import Database
-        db = Database()
-        db.save(self)
+        manager = Manager(self)
+        manager.save(self)
+
+Product.objects = Manager(Product)
