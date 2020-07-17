@@ -64,8 +64,8 @@ class Manager():
     def columns(self):
         query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{self.parent_class.__name__}'"""
         self.db.cursor.execute(query)
-        parent_class_cols = self.db.cursor.fetchall() #[('id',), ('name',)]
-        return parent_class_cols
+        parent_class_cols = self.db.cursor.fetchall()
+        return parent_class_cols #[('id',), ('name',)]
 
     def all(self):
         parent_class_cols = self.columns() #[('id',), ('name',)]
@@ -73,7 +73,8 @@ class Manager():
         for col in parent_class_cols:
             cols += col[0] + ","
 
-        query = f"""SELECT {cols[:-1:]} FROM {self.parent_class.__name__}"""
+        query = f"""SELECT * FROM {self.parent_class.__name__}"""
+        print(query)
         self.db.cursor.execute(query)
         result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
 
@@ -95,7 +96,7 @@ class Manager():
         for col in parent_class_cols:
             cols += col[0] + ","
 
-        query = f"""SELECT {cols[:-1:]} FROM {self.parent_class.__name__} WHERE {column} = '{value}'"""
+        query = f"""SELECT * FROM {self.parent_class.__name__} WHERE {column} = '{value}'"""
         self.db.cursor.execute(query)
         result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
 

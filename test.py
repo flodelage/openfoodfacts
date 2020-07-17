@@ -1,8 +1,13 @@
 
 from models.entities.product import Product
 from models.entities.category import Category
+import inspect
 
-cats = Category.objects.all()
+print( Category.params() )
 
-for cat in cats:
-    print(cat.id,cat.name)
+
+# prods = Product.objects.filter("name", "Plaisirs en graines")
+
+# for p in prods:
+#     print(p.id,p.name)
+

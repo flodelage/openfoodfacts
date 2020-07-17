@@ -1,5 +1,6 @@
 
 import unidecode
+import inspect
 from models.entities.category import Category
 from models.manager import Manager
 
@@ -47,5 +48,15 @@ class Product():
     def save(self):
         manager = Manager(self)
         manager.save(self)
+
+    @classmethod
+    def params(cls):
+        attributes = inspect.getmembers(cls, lambda attr:not(inspect.isroutine(attr)))
+        filtered_attributes = dict( [attr for attr in attributes if not(attr[0].startswith('__') and attr[0].endswith('__'))] )
+        return {
+            key: value
+            for key, value in filtered_attributes.items()
+            if value is None or (isinstance(value, list) == True)
+        }
 
 Product.objects = Manager(Product)

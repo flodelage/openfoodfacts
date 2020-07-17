@@ -16,8 +16,7 @@ class Interface:
         print("\n")
 
     def prompt_choice(self):
-        choice = input("\n Entrez votre choix >>> ")
-        return choice
+        return input("\n Entrez votre choix >>> ")
 
     def save_substitute_menu(self):
         print("\n"
