@@ -12,17 +12,17 @@ class Product():
     nutrition_grade = None
     stores = None
     url = None
-    categories = []
+    category = []
 
-    def __init__(self, name, brand, nutrition_grade, stores, url, categories):
+    def __init__(self, name, brand, nutrition_grade, stores, url, category):
         self.name = name
         self.brand = brand
         self.nutrition_grade = nutrition_grade
         self.stores = stores
         self.url = url
-        self.categories = []
-        for cat in categories.split(","): # on découpe la string pour récupérer chaque catégorie
-            self.categories.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
+        self.category = []
+        for cat in category.split(","): # on découpe la string pour récupérer chaque catégorie
+            self.category.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
 
     def __str__(self):
         return f"*** {self.name} *** brand: {self.brand} nutriscore: {self.nutrition_grade} stores: {self.stores} url: {self.url}"

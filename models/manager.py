@@ -68,24 +68,31 @@ class Manager():
         return parent_class_cols #[('id',), ('name',)]
 
     def all(self):
-        parent_class_cols = self.columns() #[('id',), ('name',)]
+        parent_class_params = self.parent_class.params() #{'brand': None, 'category': [], 'name': None, 'nutrition_grade': None, 'stores': None, 'url': None}
         cols = ""
-        for col in parent_class_cols:
-            cols += col[0] + ","
+        for col, value in parent_class_params.items():
+            if type(value) is not list:
+                cols += col + ","
+            query = f"""SELECT * FROM {self.parent_class.__name__}"""
+            self.db.cursor.execute(query)
+            result = self.db.cursor.fetchall() #[(144, 'Desserts'), (147, 'Frais')]
 
-        query = f"""SELECT * FROM {self.parent_class.__name__}"""
-        print(query)
-        self.db.cursor.execute(query)
-        result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
+        # objects = []
+        # for row in result:
+        #     id = row[0]
+        #     values = ",".join(row[-1:])
+        #     obj = self.parent_class(values)
+        #     obj.id = id
+        #     objects.append(obj)
+        # return objects
 
-        objects = []
-        for row in result:
-            id = row[0]
-            values = ",".join(row[-1:])
-            obj = self.parent_class(values)
-            obj.id = id
-            objects.append(obj)
-        return objects
+        # récupérer les attributs de l'objet, ajouter id
+        # créer la requete
+        # recuperer données
+        # créer objets
+
+        # si attribut = list
+        # 
 
     def filter(self, column, value):
         parent_class_cols = self.columns() #[('id',), ('name',)]

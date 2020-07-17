@@ -11,7 +11,7 @@ from models.manager import Manager
 
 class Requester:
     def __init__(self):
-        self.manager = Manager()
+        self.manager = Manager(self)
 
     def url_to_json(self, category_name):
         request = requests.get(f"https://fr.openfoodfacts.org/categorie/{category_name}.json")
@@ -36,7 +36,7 @@ class Requester:
 
                 for p in products:
                     try:
-                        product = Product(name=p['product_name'], brand=p['brands'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], categories=p['categories'])
+                        product = Product(name=p['product_name'], brand=p['brands'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], category=p['categories'])
                         products_list.append(product)
                     except KeyError:
                         continue
