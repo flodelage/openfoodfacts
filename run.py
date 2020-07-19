@@ -74,7 +74,7 @@ class ProgramManager:
                 choice = self.interface.prompt_choice()
                 self.interface.split()
                 # Display all products in the choosen category:
-                query = f"SELECT product.name FROM product INNER JOIN product_category On product_category.product_id = product.id INNER JOIN category ON product_category.category_id = category.id WHERE category.name = '{categories_dict[int(choice)]}'"
+                query = f"SELECT product.name FROM product INNER JOIN product_category ON product_category.product_id = product.id INNER JOIN category ON product_category.category_id = category.id WHERE category.name = '{categories_dict[int(choice)]}'"
                 self.db.cursor.execute(query)
                 products = self.db.cursor.fetchall()
                 products_dict = {}

@@ -6,8 +6,15 @@ import inspect
 
 
 
-print( Product.objects.all() )
+# cats = Category.objects.all()
 
-# for p in prods:
-#     print(p.id,p.name)
+# for c in cats:
+#     print(c.id,c.name)
+
+
+a = {'brand': None, 'category': [], 'name': None, 'nutrition_grade': None, 'stores': None, 'url': None}
+
+for value in a.values():
+    if isinstance(value, list) == True:
+        print(value)
 

@@ -73,32 +73,21 @@ class Manager():
         for col, value in parent_class_params.items():
             if type(value) is not list:
                 cols += col + ","
-            query = f"""SELECT * FROM {self.parent_class.__name__}"""
-            self.db.cursor.execute(query)
-            result = self.db.cursor.fetchall() #[(144, 'Desserts'), (147, 'Frais')]
-
-        # objects = []
-        # for row in result:
-        #     id = row[0]
-        #     values = ",".join(row[-1:])
-        #     obj = self.parent_class(values)
-        #     obj.id = id
-        #     objects.append(obj)
-        # return objects
-
-        # récupérer les attributs de l'objet, ajouter id
-        # créer la requete
-        # recuperer données
-        # créer objets
-
-        # si attribut = list
-        # 
+        query = f"""SELECT id,{cols[:-1:]} FROM {self.parent_class.__name__}"""
+        self.db.cursor.execute(query)
+        result = self.db.cursor.fetchall() #[(144, 'Desserts'), (147, 'Frais')]
+        objects = []
+        for row in result:
+            id = row[0]
+            values = ",".join(row[-1:])
+            print(values)
+            obj = self.parent_class(values)
+            setattr(obj, "id", id)
+            objects.append(obj)
+        return objects
 
     def filter(self, column, value):
         parent_class_cols = self.columns() #[('id',), ('name',)]
-        cols = ""
-        for col in parent_class_cols:
-            cols += col[0] + ","
         cols = ""
         for col in parent_class_cols:
             cols += col[0] + ","
