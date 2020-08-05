@@ -8,7 +8,7 @@ class Category():
     table = "category"
     name = None
 
-    def __init__(self, name):
+    def __init__(self, name): # must be sorted in alphabetical order, and list in the end
         self.name = name.replace("'", " ")
 
     def __str__(self):
@@ -30,5 +30,6 @@ class Category():
             for key, value in filtered_attributes.items()
             if value is None or (isinstance(value, list) == True)
         }
+
 
 Category.objects = Manager(Category)

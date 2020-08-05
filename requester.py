@@ -29,14 +29,12 @@ class Requester:
         for category in CATEGORIES:
             json_data = self.url_to_json(category) # store json from category url
             pages_nb = self.retrieve_cat_pages_nb(json_data) # store the number of pages for the category
-
             for page in range(pages_nb):
                 page_json_data = self.page_to_json(category, page+1) # store the current page for the category
                 products = page_json_data["products"] # store the products for the current page
-
                 for p in products:
                     try:
-                        product = Product(name=p['product_name'], brand=p['brands'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], category=p['categories'])
+                        product = Product(brand=p['brands'], name=p['product_name'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], category=p['categories'],)
                         products_list.append(product)
                     except KeyError:
                         continue

@@ -51,7 +51,6 @@ class Manager():
                             # set object's values:
                             obj_2nd_values += f""" "{obj.__dict__[attribute].strip()}" """ + "," # add each value to the values string
                         obj_2nd_insertion = f"""INSERT INTO {obj_2nd_table} ({obj_2nd_columns[:-1:]}) VALUES ({obj_2nd_values[:-1:]}) ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id)"""
-                        print(obj_2nd_insertion)
                         self.db.cursor.execute(obj_2nd_insertion)
                         obj_2nd_id = "SET @obj_2nd_id = LAST_INSERT_ID()"
                         self.db.cursor.execute(obj_2nd_id)
@@ -61,27 +60,45 @@ class Manager():
                         self.db.cursor.execute(m_to_m_insertion)
         self.db.connection.commit()
 
-    def columns(self):
-        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{self.parent_class.__name__}'"""
+    def columns(self, table_name):
+        query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = '{table_name}'"""
         self.db.cursor.execute(query)
         parent_class_cols = self.db.cursor.fetchall()
         return parent_class_cols #[('id',), ('name',)]
 
+    def list_in_params(self, params):
+        for value in params.values():
+            if isinstance(value, list) == True:
+                return True
+
     def all(self):
+        # set parent class params in dict
         parent_class_params = self.parent_class.params() #{'brand': None, 'category': [], 'name': None, 'nutrition_grade': None, 'stores': None, 'url': None}
-        cols = ""
+        # remove param from parent class params if param is a list
+        for key, value in parent_class_params.items():
+            if type(value) is list:
+                del parent_class_params[key]
+                break
+        parent_class_table = self.parent_class.table # set parent class table
+        # set parent class columns
+        parent_class_cols = f"{parent_class_table}.id,"
         for col, value in parent_class_params.items():
             if type(value) is not list:
-                cols += col + ","
-        query = f"""SELECT id,{cols[:-1:]} FROM {self.parent_class.__name__}"""
+                parent_class_cols += f"{self.parent_class.table}.{col}" + ","
+        # create query in order to select all the rows of a table
+        query = f"""SELECT {parent_class_cols[:-1]} FROM {parent_class_table}"""
         self.db.cursor.execute(query)
-        result = self.db.cursor.fetchall() #[(144, 'Desserts'), (147, 'Frais')]
+        parent_class_rows = self.db.cursor.fetchall() #[(144, 'Desserts'), (147, 'Frais')]
+        # create objects from the statement result
         objects = []
-        for row in result:
+        for row in parent_class_rows:
             id = row[0]
-            values = ",".join(row[-1:])
-            print(values)
-            obj = self.parent_class(values)
+            values = row[1:]
+            object_attr_args = [
+                (element, values[index])
+                for index, element in enumerate(list(parent_class_params.keys()))
+            ]
+            obj = self.parent_class(**dict(object_attr_args))
             setattr(obj, "id", id)
             objects.append(obj)
         return objects

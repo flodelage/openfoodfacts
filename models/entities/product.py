@@ -14,15 +14,17 @@ class Product():
     url = None
     category = []
 
-    def __init__(self, name, brand, nutrition_grade, stores, url, category):
+    def __init__(self, brand, name, nutrition_grade, stores, url, category=None): # must be sorted in alphabetical order, and list in the end
         self.name = name
         self.brand = brand
         self.nutrition_grade = nutrition_grade
         self.stores = stores
         self.url = url
-        self.category = []
-        for cat in category.split(","): # on découpe la string pour récupérer chaque catégorie
-            self.category.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
+        self.category = category
+        if type(category) is str: # Data comes from API
+            self.category = []
+            for cat in category.split(","): # on découpe la string pour récupérer chaque catégorie
+                self.category.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
 
     def __str__(self):
         return f"*** {self.name} *** brand: {self.brand} nutriscore: {self.nutrition_grade} stores: {self.stores} url: {self.url}"
@@ -43,7 +45,8 @@ class Product():
         return self.url
 
     def get_categories(self):
-        return self.categories
+        if type(self.category) is list:
+            return self.category
 
     def save(self):
         manager = Manager(self)
@@ -58,5 +61,6 @@ class Product():
             for key, value in filtered_attributes.items()
             if value is None or (isinstance(value, list) == True)
         }
+
 
 Product.objects = Manager(Product)
