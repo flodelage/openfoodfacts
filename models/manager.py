@@ -66,11 +66,6 @@ class Manager():
         parent_class_cols = self.db.cursor.fetchall()
         return parent_class_cols #[('id',), ('name',)]
 
-    def list_in_params(self, params):
-        for value in params.values():
-            if isinstance(value, list) == True:
-                return True
-
     def all(self):
         # set parent class params in dict
         parent_class_params = self.parent_class.params() #{'brand': None, 'category': [], 'name': None, 'nutrition_grade': None, 'stores': None, 'url': None}
@@ -86,7 +81,7 @@ class Manager():
             if type(value) is not list:
                 parent_class_cols += f"{self.parent_class.table}.{col}" + ","
         # create query in order to select all the rows of a table
-        query = f"""SELECT {parent_class_cols[:-1]} FROM {parent_class_table}"""
+        query = f"""SELECT {parent_class_cols[:-1]} FROM {parent_class_table}""" #SELECT product.id,product.brand,product.name,product.nutrition_grade,product.stores,product.url FROM product
         self.db.cursor.execute(query)
         parent_class_rows = self.db.cursor.fetchall() #[(144, 'Desserts'), (147, 'Frais')]
         # create objects from the statement result
@@ -103,21 +98,28 @@ class Manager():
             objects.append(obj)
         return objects
 
-    def filter(self, column, value):
-        parent_class_cols = self.columns() #[('id',), ('name',)]
-        cols = ""
-        for col in parent_class_cols:
-            cols += col[0] + ","
+    def filter(self, **kwargs):
+        for key in kwargs.keys():
+            if '__' in key:
+                main_table = self.parent_class.__name__
+                second_table = key[:key.index('_')]
 
-        query = f"""SELECT * FROM {self.parent_class.__name__} WHERE {column} = '{value}'"""
-        self.db.cursor.execute(query)
-        result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
 
-        objects = []
-        for row in result:
-            id = row[0]
-            values = ",".join(row[-1:])
-            obj = self.parent_class(values)
-            obj.id = id
-            objects.append(obj)
-        return objects
+
+        # parent_class_cols = self.columns() #[('id',), ('name',)]
+        # cols = ""
+        # for col in parent_class_cols:
+        #     cols += col[0] + ","
+
+        # query = f"""SELECT * FROM {self.parent_class.__name__} WHERE {column} = '{value}'"""
+        # self.db.cursor.execute(query)
+        # result = self.db.cursor.fetchall() #[(144, ' Desserts'), (147, ' Frais')]
+
+        # objects = []
+        # for row in result:
+        #     id = row[0]
+        #     values = ",".join(row[-1:])
+        #     obj = self.parent_class(values)
+        #     obj.id = id
+        #     objects.append(obj)
+        # return objects

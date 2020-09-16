@@ -4,7 +4,4 @@ from models.entities.category import Category
 import inspect
 
 
-prods = Category.objects.all()
-for p in prods:
-    print(p.name)
-
+prods = Product.objects.filter(nutriscore='c', category__name='Produits laitiers')
