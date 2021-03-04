@@ -63,7 +63,7 @@ class ProgramManager:
             if choice == "1":
                 """[FIND A SUBSTITUTE]"""
                 # Display all categories:
-                categories = Category.objects.all(Category)
+                categories = Category.objects.all()
                 for num, cat in enumerate(categories):
                     print(num+1, cat.name)
                 categories_dict = {}

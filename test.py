@@ -4,10 +4,19 @@ from models.entities.category import Category
 import inspect
 import pprint
 
-pp = pprint.PrettyPrinter(indent=4)
-prods = Product.objects.filter(nutrition_grade='c', stores='monoprix', category__name='Produits laitiers')
-for prod in prods:
-    pp.pprint(prod)
 
-# cats = Category.objects.filter(name='Produits laitiers', product__nutrition_grade='c')
-# print(prods)
+# *** récupérer toutes les catégories *** OK
+# for cat in Category.objects.all():
+#     print(cat)
+
+# *** récupérer tous les produits à partir d'un nom de catégorie *** OK
+# for prod in Product.objects.filter(category__name = 'Produits laitiers'):
+#     print(prod)
+
+# *** récupérer un produit à partir d'un nom de produit *** OK
+# for prod in Product.objects.filter(name = 'Yaourt brebis miel'):
+#     print(prod)
+
+# *** récupérer les produits ayant un nutriscore inférieur à partir d'un nutriscore et d'une catégorie *** TO DO
+for prod in Product.objects.filter(nutrition_grade__lt = 'c', category__name = 'Produits laitiers'):
+    print(prod)

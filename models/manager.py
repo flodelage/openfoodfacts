@@ -101,31 +101,30 @@ class Manager():
     def filter(self, **kwargs):
         main_table = self.parent_class.__name__
         second_table = ""
-        conditions = {}
+        filters = f"""WHERE""" # set up the second part of the query based on past conditions
 
-        # set up the conditions to be passed in the query
         for key, value in kwargs.items():
-            if '__' in key:
-                second_table = key[:key.index('_')]
-                condition_key = key.replace('__', '.')
-                condition_value = value
-                conditions[condition_key] = condition_value
-                # for example it will finally add this {'category.name':'Produits laitiers'}
+            # check if a second_table exists
+            if '__' in key and '__lt' not in key:
+                second_table = key[:key.index('_')] # set the second_table name
+                condition_key = key.replace('__', '.') # ex: 'category__name' -> 'category.name'
+                filters += f" {condition_key} = '{value}' AND "
+            # check if a condition 'less_than' exists
+            elif '__lt' in key:
+                condition_key = key.replace('__lt', '') # ex: 'nutriscore__lt' -> 'nutriscore'
+                filters += f" {condition_key} < '{value}' AND "
             else:
-                conditions[key] = value
+                filters += f" {key} = '{value}' AND "
+        filters = filters[:-5] # delete the last "AND"
 
         # set up the first part of the query depending on whether there is a second table or not
         if second_table != "": # if there is a second table
-            select = f"""SELECT * FROM {main_table} INNER JOIN {main_table}_{second_table} ON {main_table}_{second_table}.{main_table}_id = {main_table}.id INNER JOIN {second_table} ON {second_table}.id = {main_table}_{second_table}.{second_table}_id"""
+            select = f"""SELECT * FROM {main_table}
+                         INNER JOIN {main_table}_{second_table}
+                         ON {main_table}_{second_table}.{main_table}_id = {main_table}.id
+                         INNER JOIN {second_table} ON {second_table}.id = {main_table}_{second_table}.{second_table}_id"""
         else: # if there is not a second table
             select = f"""SELECT * FROM {main_table}"""
-
-        # set up the second part of the query based on past conditions
-        filters = f"""WHERE"""
-        for key, value in conditions.items():
-            filters += f" {key} = '{value}' AND "
-        filters = filters[:-5] # delete the last "AND"
-        # for example filters var will finally be "WHERE nutrition_grade = 'c' AND category.name = 'Produits laitiers'"
 
         query = select + " " + filters # add first and second part of the query in order to set up the final query
 
