@@ -100,6 +100,7 @@ class Manager():
 
     def filter(self, **kwargs):
         main_table = self.parent_class.__name__
+        main_table_params_dict = self.parent_class.params()
         second_table = ""
         filters = f"""WHERE""" # set up the second part of the query based on past conditions
 
@@ -119,24 +120,51 @@ class Manager():
 
         # set up the first part of the query depending on whether there is a second table or not
         if second_table != "": # if there is a second table
-            select = f"""SELECT * FROM {main_table}
+            second_table_params = self.columns(second_table)
+            main_table_elements = f"{main_table}.id,"
+            second_table_elements = f""
+            for param in main_table_params_dict.keys():
+                if param == second_table:
+                    next
+                else:
+                    main_table_elements += f"{main_table}.{param},"
+            for param in second_table_params:
+                second_table_elements += f"{second_table}.{param[0]},"
+            select = f"""SELECT {main_table_elements}{second_table_elements[:-1]}
+                         FROM {main_table}
                          INNER JOIN {main_table}_{second_table}
                          ON {main_table}_{second_table}.{main_table}_id = {main_table}.id
                          INNER JOIN {second_table} ON {second_table}.id = {main_table}_{second_table}.{second_table}_id"""
         else: # if there is not a second table
-            select = f"""SELECT * FROM {main_table}"""
+            select_elements = f"{main_table}.id,"
+            for param, value in main_table_params_dict.items():
+                if type(value) is not list:
+                    select_elements += f"{main_table}.{param},"
+            select = f"""SELECT {select_elements[:-1]} FROM {main_table}"""
 
         query = select + " " + filters # add first and second part of the query in order to set up the final query
 
         self.db.cursor.execute(query)
-        return self.db.cursor.fetchall()
+        rows = self.db.cursor.fetchall()
 
+        # create objects from the statement result
+        for key, value in main_table_params_dict.items():
+            if type(value) is list:
+                del main_table_params_dict[key]
+                break
 
-
-
-
-
-
+        objects = []
+        for row in rows:
+            id = row[0]
+            values = row[1:]
+            object_attr_args = [
+                (element, values[index])
+                for index, element in enumerate(list(main_table_params_dict.keys()))
+            ]
+            obj = self.parent_class(**dict(object_attr_args))
+            setattr(obj, "id", id)
+            objects.append(obj)
+        return objects
 
 
 

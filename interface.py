@@ -47,9 +47,13 @@ class Interface:
               " 1- Continuer \n"
               " 2- Supprimer ce substitut")
 
-    def show_enumerate_list(self, objects_name_dict):
-        for num, obj_name in objects_name_dict.items():
-            print(f" {num}- {obj_name.strip()}")
+    def __convert_into_enumerate_dict(self, objects_list):
+        return {num: obj.name for num, obj in enumerate(objects_list)}
+
+    def show_enumerate_list(self, objects_list):
+        enumerate_dict = self.__convert_into_enumerate_dict(objects_list)
+        for num, obj_name in enumerate_dict.items():
+            print(f" {num+1}- {obj_name.strip()}")
 
     def choice_error(self):
         print("\n Aucun choix ne correspond à la commande saisie ! \n")

@@ -6,6 +6,7 @@ import mysql.connector
 from requester import Requester
 from interface import Interface
 from models.entities.category import Category
+from models.entities.product import Product
 from scripts_MySQL.tables import tables_queries
 from settings import DB_NAME, NUTRITION_GRADES
 
@@ -64,61 +65,49 @@ class ProgramManager:
                 """[FIND A SUBSTITUTE]"""
                 # Display all categories:
                 categories = Category.objects.all()
-                for num, cat in enumerate(categories):
-                    print(num+1, cat.name)
-                categories_dict = {}
-                for num, cat_name in enumerate(categories):
-                    categories_dict[num+1] = cat_name[0]
                 print("\n Sélectionnez une catégorie: \n")
-                self.interface.show_enumerate_list(categories_dict)
+                self.interface.show_enumerate_list(categories)
                 choice = self.interface.prompt_choice()
+                category = categories[int(choice) - 1]
                 self.interface.split()
                 # Display all products in the choosen category:
-                query = f"SELECT product.name FROM product INNER JOIN product_category ON product_category.product_id = product.id INNER JOIN category ON product_category.category_id = category.id WHERE category.name = '{categories_dict[int(choice)]}'"
-                self.db.cursor.execute(query)
-                products = self.db.cursor.fetchall()
-                products_dict = {}
-                for num, prod_name in enumerate(products):
-                    products_dict[num+1] = prod_name[0]
+                products = Product.objects.filter(category__name = category.name)
                 print("\n Sélectionnez un produit: \n")
-                self.interface.show_enumerate_list(products_dict)
+                self.interface.show_enumerate_list(products)
                 choice = self.interface.prompt_choice()
+                product = products[int(choice) - 1]
                 self.interface.split()
                 # Display the choosen product:
-                print(products_dict[int(choice)])
-                query = f"SELECT name FROM product WHERE product.name = '{products_dict[int(choice)]}'"
-                self.db.cursor.execute(query)
-                product_name = self.db.cursor.fetchone()[0]
-                # Display the substitute:
-                # . retrieve product nutrition_grade
-                query = f"SELECT nutrition_grade FROM product WHERE product.name = '{products_dict[int(choice)]}'"
-                self.db.cursor.execute(query)
-                product_nutr_grade = self.db.cursor.fetchone()[0]
-                # . retrieve product categories
-                query = f"SELECT category_id FROM openfoodfacts.product_category INNER JOIN product ON product_id = product.id WHERE product.name = '{products_dict[int(choice)]}'"
-                self.db.cursor.execute(query)
-                product_categories = self.db.cursor.fetchall()
-                # . set better nutrition grades
-                better_nutr_grades = NUTRITION_GRADES[:NUTRITION_GRADES.index(product_nutr_grade)]
-                # .
-                if product_nutr_grade == "a":
-                    print("Ce produit a le meilleur nutriscore possible !")
+                print(f"{product.name} \n")
+
+                # Substitute
+                if product.nutrition_grade == "a":
+                    print("Ce produit a le meilleur nutriscore possible ! \n")
+                    substitutes = Product.objects.filter(nutrition_grade = product.nutrition_grade, category__name = category.name)
+                    if len(substitutes) == 0:
+                        print("Nous n'avons pas d'autres produits ayants le nutriscore A dans cette catégorie ! \n")
+                    else:
+                        print("Vous pouvez choisir parmi ces produits ayants également le nutriscore A: \n")
+                        self.interface.show_enumerate_list(substitutes)
+                        choice = self.interface.prompt_choice()
+                        substitute = substitutes[int(choice) - 1]
+                        self.interface.split()
                 else:
-                    nutr_string = ""
-                    all_better_products = []
-                    for nutr in better_nutr_grades:
-                        nutr_string += f"product.nutrition_grade = '{nutr}' OR "
-                    nutr_string = nutr_string[:-4]
-                    for cat in product_categories:
-                        query = f"""SELECT product.name FROM product INNER JOIN product_category ON product_id = product.id WHERE product_category.category_id = {cat[0]} AND ({nutr_string})"""
-                        self.db.cursor.execute(query)
-                        for prod in self.db.cursor.fetchall():
-                            all_better_products.append(prod)
-                    if all_better_products:
-                        print("Voici le substitut que nous vous proposons:")
-                        substitute_name = random.choice(all_better_products)[0]
+                    substitutes = Product.objects.filter(nutrition_grade__lt = product.nutrition_grade, category__name = category.name)
+                    if len(substitutes) == 0:
+                        print("Nous n'avons trouvé aucun produit ayant un meilleur nutriscore !")
+                    else:
+                        print(f"Vous pouvez choisir parmi ces produits ayants un meilleur nutriscore que {product.nutrition_grade.title()}: \n")
+                        substitutes = Product.objects.filter(nutrition_grade__lt = product.nutrition_grade, category__name = category.name)
+                        self.interface.show_enumerate_list(substitutes)
+                        choice = self.interface.prompt_choice()
+                        substitute = substitutes[int(choice) - 1]
+                        self.interface.split()
                         # . display the substitute
-                        print(substitute_name)
+                        print(f"{substitute.name} \n")
+
+
+
                         # Save the substitute:
                         self.interface.save_substitute_menu()
                         choice = self.interface.prompt_choice()
@@ -143,8 +132,6 @@ class ProgramManager:
                             pass
                         else:
                             self.interface.choice_error()
-                    else:
-                        print("Nous n'avons trouvé aucun produit ayant un meilleur nutriscore !")
             elif choice == "2":
                 """[SEE SAVED SUBSTITUTES]"""
                 query = "SELECT product.name FROM product INNER JOIN substitute ON substitute.substitute_id = product.id"
