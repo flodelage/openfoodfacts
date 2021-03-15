@@ -20,7 +20,7 @@ class Interface:
 
     def save_substitute_menu(self):
         print("\n"
-              " Voulez-vous le sauvegarder dans vos favoris ? \n"
+              " Voulez-vous sauvegarder ce substitut dans vos favoris ? \n"
               " 1- Oui \n"
               " 2- Non")
 
