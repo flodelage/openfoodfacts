@@ -61,6 +61,7 @@ class ProgramManager:
             self.interface.find_or_see_substitute_menu()
             choice = self.interface.prompt_choice()
             self.interface.split()
+
             if choice == "1":
                 """[FIND A SUBSTITUTE]"""
                 # Display all categories:
@@ -81,12 +82,15 @@ class ProgramManager:
                 # Display the choosen product:
                 print(f"\n / Catégorie: {category.name} > Produit: {product.name} /\n")
                 # Substitute
+                substitute = ""
                 if product.nutrition_grade == "a":
                     print("\n Ce produit a le meilleur nutriscore possible ! \n")
                     substitutes = Product.objects.filter(nutrition_grade = product.nutrition_grade, category__name = category.name)
                     if len(substitutes) == 0:
                         print("\n Nous n'avons pas d'autres produits ayants le nutriscore A dans cette catégorie ! \n")
                     else:
+                        for substitute in substitutes:
+                            if substitute.name == product.name: substitutes.remove(substitute)
                         print("\n Vous pouvez choisir parmi ces produits ayants également le nutriscore A: \n")
                         self.interface.show_enumerate_list(substitutes)
                         choice = self.interface.prompt_choice()
@@ -104,7 +108,9 @@ class ProgramManager:
                         substitute = substitutes[int(choice) - 1]
                         self.interface.split()
                 # . display the substitute
-                if substitute:
+                if substitute == "":
+                    pass
+                else:
                     print(f"\n / Catégorie: {category.name} > Produit: {product.name} > Substitut: {substitute.name} /\n")
 
 
@@ -133,13 +139,14 @@ class ProgramManager:
                         pass
                     else:
                         self.interface.choice_error()
+
             elif choice == "2":
                 """[SEE SAVED SUBSTITUTES]"""
                 query = "SELECT product.name FROM product INNER JOIN substitute ON substitute.substitute_id = product.id"
                 self.db.cursor.execute(query)
                 substitutes = self.db.cursor.fetchall()
                 if not substitutes:
-                    print("Vous n'avez pas de substitut sauvegardé !")
+                    print("\n Vous n'avez pas de substitut sauvegardé ! \n")
                 else:
                     # Display of all saved substitutes:
                     print("\n Voici vos substituts sauvegardés: \n")

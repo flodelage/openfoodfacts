@@ -1,0 +1,3 @@
+
+class ModelHasNoAttributeWhichIsNotList(Exception):
+    pass

@@ -1,25 +1,20 @@
 
 import unidecode
 import inspect
+from exceptions import ModelHasNoAttributeWhichIsNotList
+from models.entities.product import Product
 from models.manager import Manager
 
+class Substitute():
+    table = "substitute"
+    product = []
 
-class Category():
-    table = "category"
-    name = None
-
-    def __init__(self, name): # must be sorted in alphabetical order, and list in the end
-        self.name = name.replace("'", " ")
-
-    def __str__(self):
-        return f"catégorie: {self.name}"
-
-    def get_name(self):
-        return self.name
-
-    def save(self):
-        manager = Manager(self)
-        manager.save(self)
+    def __init__(self, product=None):
+        self.product = product
+        if isinstance(self.product, Product):
+            prod = self.product
+            self.product = []
+            self.product.append(prod)
 
     def object_attributes_to_str(self):
         obj_columns = ""
@@ -46,4 +41,4 @@ class Category():
         }
 
 
-Category.objects = Manager(Category)
+Substitute.objects = Manager(Substitute)
