@@ -36,7 +36,7 @@ class Interface:
               " 1- Créer la base de données \n"
               " q- Quitter")
 
-    def find_or_see_substitute_menu(self):
+    def find_or_display_substitute_menu(self):
         print("\n"
               " 1- Trouver un substitut à un aliment \n"
               " 2- Retrouver mes aliments substitués \n"

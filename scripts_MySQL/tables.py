@@ -22,9 +22,9 @@ f"CREATE TABLE {DB_NAME}.category ("\
 "ENGINE = INNODB",
 
 f"CREATE TABLE {DB_NAME}.substitute ("\
-"product_id INT NOT NULL,"\
-"substitute_id INT NOT NULL,"\
-"PRIMARY KEY (product_id, substitute_id))"\
+"product INT NOT NULL,"\
+"substitute INT NOT NULL,"\
+"PRIMARY KEY (product, substitute))"\
 "ENGINE = INNODB",
 
 f"CREATE TABLE {DB_NAME}.product_category ("\
@@ -44,9 +44,9 @@ f"FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CA
 
 f"ALTER TABLE {DB_NAME}.substitute "\
 "ADD CONSTRAINT sub_substitute_fk "\
-f"FOREIGN KEY (substitute_id) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE",
+f"FOREIGN KEY (substitute) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE",
 
 f"ALTER TABLE {DB_NAME}.substitute "\
 "ADD CONSTRAINT sub_product_fk "\
-f"FOREIGN KEY (product_id) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE",
+f"FOREIGN KEY (product) REFERENCES product(id) ON DELETE CASCADE ON UPDATE CASCADE",
 )

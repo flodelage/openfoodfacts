@@ -7,8 +7,9 @@ from requester import Requester
 from interface import Interface
 from models.entities.category import Category
 from models.entities.product import Product
+from models.entities.substitute import Substitute
 from scripts_MySQL.tables import tables_queries
-from settings import DB_NAME, NUTRITION_GRADES
+from settings import DB_NAME
 
 
 class ProgramManager:
@@ -58,7 +59,7 @@ class ProgramManager:
             self.interface.split()
 
             """[SUBSTITUTES MENU]"""
-            self.interface.find_or_see_substitute_menu()
+            self.interface.find_or_display_substitute_menu()
             choice = self.interface.prompt_choice()
             self.interface.split()
 
@@ -108,43 +109,32 @@ class ProgramManager:
                         substitute = substitutes[int(choice) - 1]
                         self.interface.split()
                 # . display the substitute
-                if substitute == "":
+                print(f"\n / Catégorie: {category.name} > Produit: {product.name} > Substitut: {substitute.name} /\n")
+
+                """[SAVE THE SUBSTITUTE]"""
+                self.interface.save_substitute_menu()
+                choice = self.interface.prompt_choice()
+                self.interface.split()
+                if choice == "1":
+                    sub = Substitute(product=product.id,substitute=substitute.id)
+                    try:
+                        Substitute.objects.save(sub)
+                    except:
+                        print(f"""\n Vous avez déjà sauvegardé le substitut "{substitute.name}" pour le produit "{product.name}" ! \n""")
+                elif choice == "2":
                     pass
                 else:
-                    print(f"\n / Catégorie: {category.name} > Produit: {product.name} > Substitut: {substitute.name} /\n")
-
-
-
-                    # Save the substitute:
-                    self.interface.save_substitute_menu()
-                    choice = self.interface.prompt_choice()
-                    self.interface.split()
-                    if choice == "1":
-                        # . retrieve product id
-                        query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{product_name}'"""
-                        self.db.cursor.execute(query)
-                        product_id = self.db.cursor.fetchone()[0]
-                        # . retrieve substitute id
-                        query = f"""SELECT product.id FROM product INNER JOIN product_category ON product_id = product.id WHERE product.name = '{substitute_name}'"""
-                        self.db.cursor.execute(query)
-                        substitute_id = self.db.cursor.fetchone()[0]
-                        # . save the substitute
-                        query = f"""INSERT INTO substitute (product_id, substitute_id) VALUES ('{product_id}', '{substitute_id}')"""
-                        try:
-                            self.db.cursor.execute(query)
-                            self.db.connection.commit()
-                        except:
-                            print(f"Vous avez déjà sauvegardé ce substitut pour le produit {product_name}")
-                    elif choice == "2":
-                        pass
-                    else:
-                        self.interface.choice_error()
+                    self.interface.choice_error()
 
             elif choice == "2":
                 """[SEE SAVED SUBSTITUTES]"""
-                query = "SELECT product.name FROM product INNER JOIN substitute ON substitute.substitute_id = product.id"
-                self.db.cursor.execute(query)
-                substitutes = self.db.cursor.fetchall()
+                # Display all substitutes:
+                substitutes = Substitute.objects.all()
+                print("\n Sélectionnez un substitut: \n")
+                self.interface.show_enumerate_list(substitutes)
+                choice = self.interface.prompt_choice()
+                substitute = substitute[int(choice) - 1]
+                self.interface.split()
                 if not substitutes:
                     print("\n Vous n'avez pas de substitut sauvegardé ! \n")
                 else:

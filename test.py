@@ -8,8 +8,13 @@ import pprint
 pp = pprint.PrettyPrinter(indent=4)
 
 # *** récupérer toutes les catégories *** DONE
-# for prod in Product.objects.filter():
+# for prod in Product.objects.all():
 #     pp.pprint(prod.name)
+
+# *** récupérer tous les produits *** DONE
+# for prod in Product.objects.all():
+#     pp.pprint(prod)
+
 
 # *** récupérer tous les produits à partir d'un nom de catégorie *** DONE
 # for prod in Product.objects.filter(category__name = 'Produits laitiers'):
@@ -23,8 +28,12 @@ pp = pprint.PrettyPrinter(indent=4)
 # for prod in Product.objects.filter(nutrition_grade__lt = 'b', category__name = "yaourts"):
 #     pp.pprint(prod.name)
 
+# *** récupérer tous les substituts *** DONE
+# for sub in Substitute.objects.all():
+#     pp.pprint(sub)
+
 # *** sauvegarder un substitut ***
-p1 = Product("Naturaplan,Coop,Coop Naturaplan","Jogurt à La Grecque au miel","c","Coop","https://fr.openfoodfacts.org/produit/7611654691709/jogurt-a-la-grecque-au-miel-naturaplan","yaourts,desserts")
-sub = Substitute(p1)
-subs = [sub]
-Substitute.objects.save_all(subs)
+p = Product.objects.filter(name = 'Yaourt brebis miel')[0]
+s = Product.objects.filter(name = "Brassé miel au lait entier")[0]
+sub = Substitute(substitute=s.id,product=p.id)
+Substitute.objects.save(sub)
