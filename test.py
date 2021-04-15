@@ -34,6 +34,9 @@ pp = pprint.PrettyPrinter(indent=4)
 
 # *** sauvegarder un substitut ***
 p = Product.objects.filter(name = 'Yaourt brebis miel')[0]
-s = Product.objects.filter(name = "Brassé miel au lait entier")[0]
+s = Product.objects.filter(name = 'Brassé miel au lait entier')[0]
 sub = Substitute(substitute=s.id,product=p.id)
 Substitute.objects.save(sub)
+
+# *** supprimer un substitut ***
+Substitute.objects.delete(product = 30)

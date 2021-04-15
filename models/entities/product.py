@@ -26,8 +26,11 @@ class Product(Entity):
             for cat in category.split(","): # on découpe la string pour récupérer chaque catégorie
                 self.category.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
 
+        if self.stores == "":
+            self.stores = "Non renseigné"
+
     def __str__(self):
-        return f"*** {self.name} *** brand: {self.brand} nutriscore: {self.nutrition_grade} stores: {self.stores} url: {self.url}"
+        return f"*** {self.name} ***\n Brand: {self.brand}, Nutriscore: {self.nutrition_grade}, Stores: {self.stores}, Link: {self.url}"
 
     def get_name(self):
         return self.name

@@ -1,6 +1,6 @@
 
 from database import Database
-from exceptions import ModelHasNoAttributeWhichIsNotList
+from settings import DB_NAME
 
 class Manager():
     def __init__(self, parent_class):
@@ -156,3 +156,10 @@ class Manager():
             setattr(obj, "id", id)
             objects.append(obj)
         return objects
+
+    def delete(self, **kwargs):
+        main_table = self.parent_class.__name__
+        filters = "".join(f"{key} = {value} AND " for key, value in kwargs.items())
+        query = f"DELETE FROM {main_table} WHERE {filters[:-5]}"
+        self.db.cursor.execute(query)
+        self.db.connection.commit()

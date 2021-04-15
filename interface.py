@@ -1,7 +1,5 @@
 
 class Interface:
-    def __init__(self):
-        pass
 
     def welcome(self, db_name):
         print("\n")
@@ -42,10 +40,16 @@ class Interface:
               " 2- Retrouver mes aliments substitués \n"
               " q- Quitter")
 
-    def substitutes_management_menu(self):
+    def substitute_management_menu(self):
         print("\n"
               " 1- Continuer \n"
-              " 2- Supprimer ce substitut")
+              " 2- Supprimer ce substitut de vos favoris")
+
+    def choice_error(self):
+        print("\n Aucun choix ne correspond à la commande saisie ! \n")
+
+    def split(self):
+        print("--------------------------------------------------------------------------------------------------------")
 
     def __convert_into_enumerate_dict(self, objects_list):
         return {num: obj.name for num, obj in enumerate(objects_list)}
@@ -55,8 +59,14 @@ class Interface:
         for num, obj_name in enumerate_dict.items():
             print(f" {num+1}- {obj_name.strip()}")
 
-    def choice_error(self):
-        print("\n Aucun choix ne correspond à la commande saisie ! \n")
+    def show_substitute_enumerate_list(self, objects_list):
+        for num, sub_prod in enumerate(objects_list):
+            print(f" {num+1}- {sub_prod['substitute'].name} (produit substituté: {sub_prod['product'].name})")
 
-    def split(self):
-        print("--------------------------------------------------------------------------------------------------------")
+    def show_substitute_and_substituted(self, substitute_dict):
+        print("\n"
+              " - Substitut: \n"
+             f" {substitute_dict['substitute']}\n"
+              "\n"
+              " - Produit substitué: \n"
+             f" {substitute_dict['product']}\n")

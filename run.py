@@ -1,8 +1,9 @@
 
 import random
-from database import Database
 
 import mysql.connector
+
+from database import Database
 from requester import Requester
 from interface import Interface
 from models.entities.category import Category
@@ -130,61 +131,41 @@ class ProgramManager:
                 """[SEE SAVED SUBSTITUTES]"""
                 # Display all substitutes:
                 substitutes = Substitute.objects.all()
-                print("\n Sélectionnez un substitut: \n")
-                self.interface.show_enumerate_list(substitutes)
-                choice = self.interface.prompt_choice()
-                substitute = substitute[int(choice) - 1]
-                self.interface.split()
-                if not substitutes:
+                if substitutes == []:
                     print("\n Vous n'avez pas de substitut sauvegardé ! \n")
+                    self.interface.split()
                 else:
-                    # Display of all saved substitutes:
-                    print("\n Voici vos substituts sauvegardés: \n")
-                    substitutes_dict = {}
-                    for num, subst_name in enumerate(substitutes):
-                        substitutes_dict[num+1] = subst_name[0]
-                    self.interface.show_enumerate_list(substitutes_dict)
+                    substitutes_models = []
+                    for sub in substitutes:
+                        substitute = Product.objects.filter(id=sub.substitute)[0]
+                        product = Product.objects.filter(id=sub.product)[0]
+                        substitutes_models.append({"substitute": substitute, "product": product})
+                    print("\n Sélectionnez un substitut: \n")
+                    self.interface.show_substitute_enumerate_list(substitutes_models)
+                    choice = self.interface.prompt_choice()
+                    substitute = substitutes_models[int(choice) - 1]
+                    self.interface.split()
+                    # Display the choosen substitute product / product substituted:
+                    self.interface.show_substitute_and_substituted(substitute)
+
+                    """[MANAGE SAVED SUBSTITUTES]"""
+                    self.interface.substitute_management_menu()
                     choice = self.interface.prompt_choice()
                     self.interface.split()
-                    if int(choice) in substitutes_dict.keys():
-                        # Display a substitute and the substituted product:
-                        # - the substitute:
-                        query = f"SELECT * FROM product WHERE product.name = '{substitutes_dict[int(choice)]}'"
-                        self.db.cursor.execute(query)
-                        substitute = self.db.cursor.fetchone()
-                        print(f"le substitut: {substitute}")
-                        # - the substituted product:
-                        # . retrieve substitute id
-                        query = f"SELECT id FROM product WHERE product.name = '{substitutes_dict[int(choice)]}'"
-                        self.db.cursor.execute(query)
-                        substitute_id = self.db.cursor.fetchone()[0]
-                        # . retrieve substituted product id
-                        query = f"SELECT product_id FROM substitute WHERE substitute_id = {substitute_id}"
-                        self.db.cursor.execute(query)
-                        product_id = self.db.cursor.fetchone()[0]
-                        # . retrieve substituted product
-                        query = f"SELECT * FROM product WHERE product.id = {product_id}"
-                        self.db.cursor.execute(query)
-                        product = self.db.cursor.fetchone()
-                        print(f"le produit substitué: {product}")
-                        """[MANAGE SAVED SUBSTITUTES]"""
-                        self.interface.substitutes_management_menu()
-                        choice = self.interface.prompt_choice()
-                        self.interface.split()
-                    else:
-                        self.interface.choice_error()
-                    if choice == "1":
-                        # continue
-                        pass
-                    elif choice == "2":
-                        # Delete the selected substitute
-                        query = f"DELETE FROM substitute WHERE substitute_id = {substitute_id} AND product_id = {product_id}"
-                        self.db.cursor.execute(query)
-                        self.db.connection.commit()
-                    else:
-                        self.interface.choice_error()
-            elif choice == "q":
-                run = False
-                self.interface.goodbye(DB_NAME)
             else:
                 self.interface.choice_error()
+            if choice == "1":
+                pass
+            elif choice == "2":
+                # Delete the selected substitute
+                Substitute.objects.delete(substitute = substitute['substitute'].id,
+                                          product= substitute['product'].id)
+            else:
+                self.interface.choice_error()
+
+
+    # elif choice == "q":
+    #     run = False
+    #     self.interface.goodbye(DB_NAME)
+    # else:
+    #     self.interface.choice_error()
