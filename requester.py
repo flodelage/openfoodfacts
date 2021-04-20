@@ -23,6 +23,14 @@ class Requester:
 
     def retrieve_cat_pages_nb(self, json_data):
         return round(int(json_data["count"]) / json_data["page_size"]) + 1
+    def clean_data(self, objects_list):
+        cleaned_list = []
+        names = []
+        for obj in objects_list:
+            if unidecode.unidecode(obj.get_name().strip().lower()) not in names:
+                cleaned_list.append(obj)
+                names = [unidecode.unidecode(obj.get_name().strip().lower()) for obj in cleaned_list]
+        return cleaned_list
 
     def get_data(self):
         products_list = []
@@ -36,15 +44,11 @@ class Requester:
                     try:
                         product = Product(brand=p['brands'], name=p['product_name'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], category=p['categories'],)
                         products_list.append(product)
-                    except KeyError:
-                        continue
+                    except KeyError as e:
+                        if e.args == ('stores',):
+                            product = Product(brand=p['brands'], name=p['product_name'], nutrition_grade=p['nutrition_grades'], stores="", url=p['url'], category=p['categories'],)
+                            products_list.append(product)
+                        elif e.args == ('nutrition_grades',):
+                            continue
         self.manager.save_all(self.clean_data(products_list))
 
-    def clean_data(self, objects_list):
-        cleaned_list = []
-        names = []
-        for obj in objects_list:
-            if unidecode.unidecode(obj.get_name().strip().lower()) not in names:
-                cleaned_list.append(obj)
-                names = [unidecode.unidecode(obj.get_name().strip().lower()) for obj in cleaned_list]
-        return cleaned_list
