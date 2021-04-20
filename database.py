@@ -12,7 +12,6 @@ class Database:
         passwd = DB_PASSWD,
         database = DB_NAME
         )
-        self.connection._database = DB_NAME
         self.cursor = self.connection.cursor(buffered=True)
 
     def existence_db(self, db_name):

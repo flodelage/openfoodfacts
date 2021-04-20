@@ -30,7 +30,7 @@ class Product(Entity):
             self.stores = "Non renseigné"
 
     def __str__(self):
-        return f"*** {self.name} ***\n Brand: {self.brand}, Nutriscore: {self.nutrition_grade}, Stores: {self.stores}, Link: {self.url}"
+        return f"*** {self.name} ***\n Marque: {self.brand}, Nutriscore: {self.nutrition_grade.capitalize()}, Magasins: {self.stores}, Lien: {self.url}"
 
     def get_name(self):
         return self.name
