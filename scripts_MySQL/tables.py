@@ -1,7 +1,6 @@
 
 from settings import DB_NAME
 
-
 tables_queries = (
 f"CREATE TABLE {DB_NAME}.product ("\
 "id INT NOT NULL AUTO_INCREMENT,"\

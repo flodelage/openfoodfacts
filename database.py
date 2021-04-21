@@ -1,5 +1,4 @@
 
-import asyncio
 import mysql.connector
 import requests
 from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER

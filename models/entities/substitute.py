@@ -1,6 +1,5 @@
 
 from models.entities.entity import Entity
-from models.entities.product import Product
 from models.manager import Manager
 
 class Substitute(Entity):
