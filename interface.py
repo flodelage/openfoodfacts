@@ -1,16 +1,23 @@
 
+from settings import DB_NAME
+
 class Interface:
     # ----- Greetings -----
-    def welcome(self, db_name):
+    def welcome(self):
         print("\n")
         print("* * * * * * * * * * * * * * * * *")
         print("*                               *")
-        print(f"* Bienvenue sur {db_name.capitalize()} ! *")
+        print(f"* Bienvenue sur {DB_NAME.capitalize()} ! *")
         print("*                               *")
         print("* * * * * * * * * * * * * * * * *")
 
-    def goodbye(self, db_name):
-        print(f"\n À bientôt sur {db_name.capitalize()} !")
+    def goodbye(self):
+        print("\n")
+        print("* * * * * * * * * * * * * * * * *")
+        print("*                               *")
+        print(f"* À bientôt sur {DB_NAME.capitalize()} ! *")
+        print("*                               *")
+        print("* * * * * * * * * * * * * * * * *")
         print("\n")
 
     # ----- Home menu -----
@@ -18,13 +25,6 @@ class Interface:
         print("\n"
               " 1- Continuer \n"
               " 2- Recréer la base de données \n"
-              " 3- Supprimer la base de données \n"
-              " q- Quitter")
-
-    # ----- DB creation menu -----
-    def db_creation_menu(self):
-        print("\n"
-              " 1- Créer la base de données \n"
               " q- Quitter")
 
     # ----- Categories -----

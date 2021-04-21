@@ -51,4 +51,3 @@ class Requester:
                         elif e.args == ('nutrition_grades',):
                             continue
         self.manager.save_all(self.clean_data(products_list))
-

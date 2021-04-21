@@ -21,42 +21,23 @@ class ProgramManager:
 
     def run(self):
         run = True
-        self.interface.welcome(DB_NAME)
-
+        self.interface.welcome()
         while run:
-            # if openfoodfacts database already exists:
-            if self.db.existence_db(DB_NAME) == True:
-                """[MAIN MENU]"""
-                self.interface.db_management_menu()
-                choice = self.interface.prompt_choice()
-                if choice == "1":
-                    pass
-                elif choice == "2":
-                    self.db.drop_db(DB_NAME)
-                    self.db.create_db(DB_NAME)
-                    self.db.create_schema(tables_queries)
-                    self.req.get_data()
-                elif choice == "3":
-                    self.db.drop_db(DB_NAME)
-                elif choice == "q":
-                    run = False
-                    self.interface.goodbye(DB_NAME)
-                else:
-                    self.interface.choice_error()
-            # if openfoodfacts database doen't exists:
+            """[MAIN MENU]"""
+            self.interface.db_management_menu()
+            choice = self.interface.prompt_choice()
+            if choice == "1":
+                pass
+            elif choice == "2":
+                self.db.drop_db()
+                self.db.create_db()
+                self.db.create_schema(tables_queries)
+                self.req.get_data()
+            elif choice == "q":
+                self.interface.goodbye()
+                break
             else:
-                """[DB CREATION MENU]"""
-                self.interface.db_creation_menu()
-                choice = self.interface.prompt_choice()
-                if choice == "1":
-                    self.db.create_db(DB_NAME)
-                    self.db.create_schema(tables_queries)
-                    self.req.get_data()
-                elif choice == "q":
-                    run = False
-                    self.interface.goodbye(DB_NAME)
-                else:
-                    self.interface.choice_error()
+                self.interface.choice_error()
             self.interface.split()
 
             """[SUBSTITUTES MENU]"""
@@ -171,7 +152,12 @@ class ProgramManager:
                             self.interface.delete_fail(substitute)
                         self.interface.split()
                     elif choice == "q":
-                        run = False
-                        self.interface.goodbye(DB_NAME)
+                        self.interface.goodbye()
+                        break
                     else:
                         self.interface.choice_error()
+            elif choice == "q":
+                self.interface.goodbye()
+                break
+            else:
+                self.interface.choice_error()
