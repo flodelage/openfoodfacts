@@ -14,6 +14,9 @@ from settings import DB_NAME
 
 
 class ProgramManager:
+    """
+    Responsability: application process
+    """
     def __init__(self):
         self.interface = Interface()
         self.db = Database()

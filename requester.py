@@ -10,6 +10,10 @@ from models.manager import Manager
 
 
 class Requester:
+    """
+    Calls the API in order to retrieve the necessary data
+    then create products and categories instances
+    """
     def __init__(self):
         self.manager = Manager(self)
 

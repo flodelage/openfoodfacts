@@ -2,6 +2,9 @@
 from settings import DB_NAME
 
 class Interface:
+    """
+    Responsability: manage the display for the user
+    """
     # ----- Greetings -----
     def welcome(self):
         print("\n")

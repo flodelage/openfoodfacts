@@ -7,7 +7,7 @@ class Category(Entity):
     table = "category"
     name = None
 
-    def __init__(self, name): # must be sorted in alphabetical order, and list in the end
+    def __init__(self, name):
         self.name = name.replace("'", " ")
 
     def __str__(self):

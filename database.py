@@ -5,6 +5,11 @@ from settings import DB_HOST, DB_NAME, DB_PASSWD, DB_USER
 
 
 class Database:
+    """
+    Responsabilities:
+    Connection to the database.
+    Creation, deletion, settlement of the database
+    """
     def __init__(self):
         self.connection = mysql.connector.connect(
         host = DB_HOST,

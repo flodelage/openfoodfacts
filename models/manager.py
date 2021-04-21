@@ -3,6 +3,11 @@ from database import Database
 from settings import DB_NAME
 
 class Manager():
+    """
+    Class that interacts with the database.
+    It is called by the entities and allows them
+    to make insert, select, delete queries
+    """
     def __init__(self, parent_class):
         self.parent_class = parent_class
         self.db = Database()
