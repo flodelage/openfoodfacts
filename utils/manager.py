@@ -1,5 +1,5 @@
 
-from database import Database
+from utils.database import Database
 from settings import DB_NAME
 
 class Manager():

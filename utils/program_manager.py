@@ -3,12 +3,12 @@ import random
 
 import mysql.connector
 
-from database import Database
-from requester import Requester
-from interface import Interface
-from models.entities.category import Category
-from models.entities.product import Product
-from models.entities.substitute import Substitute
+from utils.database import Database
+from utils.requester import Requester
+from templates.interface import Interface
+from models.category import Category
+from models.product import Product
+from models.substitute import Substitute
 from scripts_MySQL.tables import tables_queries
 from settings import DB_NAME
 

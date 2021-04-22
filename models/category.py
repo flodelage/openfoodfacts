@@ -1,6 +1,6 @@
 
-from models.entities.entity import Entity
-from models.manager import Manager
+from models.entity import Entity
+from utils.manager import Manager
 
 
 class Category(Entity):

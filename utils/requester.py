@@ -4,9 +4,9 @@ import json
 import unidecode
 
 from settings import CATEGORIES
-from models.entities.product import Product
-from models.entities.category import Category
-from models.manager import Manager
+from models.product import Product
+from models.category import Category
+from utils.manager import Manager
 
 
 class Requester:

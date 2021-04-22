@@ -1,8 +1,8 @@
 
 import unidecode
-from models.entities.entity import Entity
-from models.entities.category import Category
-from models.manager import Manager
+from models.entity import Entity
+from models.category import Category
+from utils.manager import Manager
 
 
 class Product(Entity):
