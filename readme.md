@@ -20,45 +20,49 @@ L'utilisateur lance le programme, et tombe sur le menu principal:
 * Sélectionnez une catégorie. [Plusieurs propositions associées à un chiffre. L'utilisateur entre le chiffre correspondant et appuie sur entrée]
 * Sélectionnez un produit. [Plusieurs propositions associées à un chiffre. L'utilisateur entre le chiffre correspondant au produit choisi et appuie sur entrée]
 * Sélectionnez un substitut. Le programme propose, si possible, des substituts ayant un meilleur nutriscore que le produit choisi précédemment. [Plusieurs propositions associées à un chiffre. L'utilisateur entre le chiffre correspondant au substitut choisi et appuie sur entrée]
-* Le programme affiche alors les détails du susbstitut choisi. Son nom, son nutriscore, sa marque, une description, un magasin où l'acheter et un lien vers la page d'OpenFoodFacts concernant cet aliment.
+* Le programme affiche alors les détails du susbstitut choisi. Son nom, son nutriscore, sa marque, un magasin où l'acheter et un lien vers la page d'OpenFoodFacts concernant cet aliment.
 * L'utilisateur a alors la possibilité d'enregistrer ou non le substitut dans ses favoris.
 
 ##### choix 2 - Parcours pour gérer ses substituts
 * Sélectionnez un substitut. Le programme affiche, si il y en a, les substituts sauvegardés par l'utilisateur ainsi que le produit qui a été substitué. [Plusieurs propositions associées à un chiffre. L'utilisateur entre le chiffre correspondant au substitut choisi et appuie sur entrée]
-* Le programme affiche alors les détails du substitut choisi ainsi que ceux du produit substitué. Leurs noms, nutriscore, marque, description, magasins et liens vers les pages d'OpenFoodFacts.
+* Le programme affiche alors les détails du substitut choisi ainsi que ceux du produit substitué. Leurs noms, nutriscore, marque, magasins et liens vers les pages d'OpenFoodFacts.
 * L'utilisateur a alors la possibilité de supprimer ou non le substitut de ses favoris.
 
-## Fonctionnalité
-* Recherche d'aliments dans la base Open Food Facts.
-* L'utilisateur interagit avec le programme dans le terminal ou via une interface graphique.
-* Si l'utilisateur entre un caractère qui n'est pas un chiffre, le programme doit lui répéter la question.
-* La recherche doit s'effectuer sur une base MySql.
+### Technologies
+* Python 3.8
+* OpenFoodFacts' API
+* MySQL
 
-## Pré-requis
-Il est nécessaire dans un premier temps de créer une base de donnée et de remplir les informations de connexion à cette dernière dans le fichier **password.py.dist** présent dans le répertoire app/model.
-Il faut également enlever l'extension dist.
-
-## Installation
-Afin de créer les tables et nourrir ces dernières, lors du premier lancement du programme dans le terminal, veuillez rajouter l'argument **-d create**. Voici un exemple si vous êtes placé directement dans le répertoire app/:
-
+## Pour lancer le projet
+1. Cloner le repo:
 ```
-python3 core.py -d create
+git clone https://github.com/flodelage/openfoodfacts.git
 ```
 
-## Lancement de l'application
-Pour lancer l'application, il suffit simplement d'exécuter **core.py**. Si vous êtes dans le répertoire app/:
-
+2. Créer un environnement virtuel:
 ```
-python3 core.py
+python3 -m venv env
 ```
 
-## Options
-La mise à jour de la base de données s'effectue automatique si la dernière a eu lieu plus de 7 jours lorsque le programme s'éxecute.
-Il est cependant possible de *forcer* la mise à jour avec l'argument **-d update**. Voici un exemple si vous êtes placé directement dans le répertoire app/:
-
+3. Activer l'environnement virtuel:
 ```
-python3 core.py -d update
+source env/bin/activate
 ```
 
+4. Installer requirements:
+```
+pip install -r requirements.txt
+```
 
+5. Vous pouvez modifier le module settings.py:
+* les paramètres de vote base de données:
+DB_HOST, DB_USER, DB_PASSWD and DB_NAME
+* la constante CATEGORIES en ajoutant les catégories de votre choix
+Par exemple: CATEGORIES = [
+    "yaourts-au-miel",
+    "jambons-blancs-fumes",]
 
+6. Lancer le projet:
+```
+python3 main.py
+```
