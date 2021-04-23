@@ -30,11 +30,12 @@ class Requester:
 
     def clean_data(self, objects_list):
         cleaned_list = []
-        names = []
+        names = set()
         for obj in objects_list:
-            if unidecode.unidecode(obj.get_name().strip().lower()) not in names:
+            name = unidecode.unidecode(obj.get_name().strip().lower())
+            if name not in names:
                 cleaned_list.append(obj)
-                names = [unidecode.unidecode(obj.get_name().strip().lower()) for obj in cleaned_list]
+                names.add(name)
         return cleaned_list
 
     def get_data(self):
