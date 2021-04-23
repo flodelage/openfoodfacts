@@ -21,36 +21,13 @@ class Product(Entity):
         self.stores = stores
         self.url = url
         self.category = category
-        if type(category) is str: # Data comes from API
+        if type(category) is str:
             self.category = []
-            for cat in category.split(","): # on découpe la string pour récupérer chaque catégorie
-                self.category.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
+            for cat in category.split(","):
+                self.category.append(Category(name=cat))
 
     def __str__(self):
         return f"*** {self.name} ***\n Marque: {self.brand}, Nutriscore: {self.nutrition_grade.capitalize()}, Magasins: {self.stores}, Lien: {self.url}"
-
-    def get_name(self):
-        return self.name
-
-    def get_brand(self):
-        return self.brand
-
-    def get_nutrition_grade(self):
-        return self.nutrition_grade
-
-    def get_stores(self):
-        return self.stores
-
-    def get_url(self):
-        return self.url
-
-    def get_categories(self):
-        if type(self.category) is list:
-            return self.category
-
-    def save(self):
-        manager = Manager(self)
-        manager.save(self)
 
 
 Product.objects = Manager(Product)

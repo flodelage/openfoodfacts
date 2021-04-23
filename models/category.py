@@ -13,12 +13,5 @@ class Category(Entity):
     def __str__(self):
         return f"catégorie: {self.name}"
 
-    def get_name(self):
-        return self.name
-
-    def save(self):
-        manager = Manager(self)
-        manager.save(self)
-
 
 Category.objects = Manager(Category)
