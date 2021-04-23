@@ -27,6 +27,7 @@ class Requester:
 
     def retrieve_cat_pages_nb(self, json_data):
         return round(int(json_data["count"]) / json_data["page_size"]) + 1
+
     def clean_data(self, objects_list):
         cleaned_list = []
         names = []
@@ -45,13 +46,20 @@ class Requester:
                 page_json_data = self.page_to_json(category, page+1) # store the current page for the category
                 products = page_json_data["products"] # store the products for the current page
                 for p in products:
-                    try:
-                        product = Product(brand=p['brands'], name=p['product_name'], nutrition_grade=p['nutrition_grades'], stores=p['stores'], url=p['url'], category=p['categories'],)
-                        products_list.append(product)
-                    except KeyError as e:
-                        if e.args == ('stores',):
-                            product = Product(brand=p['brands'], name=p['product_name'], nutrition_grade=p['nutrition_grades'], stores="", url=p['url'], category=p['categories'],)
-                            products_list.append(product)
-                        elif e.args == ('nutrition_grades',):
+                    params = {
+                        'brands': "",
+                        'product_name_fr': "",
+                        'nutrition_grades': "",
+                        'stores': "",
+                        'url': "",
+                        'categories': ""
+                    }
+                    for key in params:
+                        try:
+                            params[key] = p[key]
+                        except KeyError:
                             continue
+                    if params['product_name_fr'] != "" and params['nutrition_grades'] != "" and params['url'] != "" and params['categories'] != "":
+                        product = Product(brand=params['brands'], name=params['product_name_fr'], nutrition_grade=params['nutrition_grades'], stores=params['stores'], url=params['url'], category=params['categories'])
+                        products_list.append(product)
         self.manager.save_all(self.clean_data(products_list))

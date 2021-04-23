@@ -61,5 +61,5 @@ DB_HOST, DB_USER, DB_PASSWD and DB_NAME
 
 6. Lancer le projet:
 ```
-python3 main.py
+python main.py
 ```

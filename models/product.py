@@ -7,8 +7,8 @@ from utils.manager import Manager
 
 class Product(Entity):
     table = "product"
-    name = None
     brand = None
+    name = None
     nutrition_grade = None
     stores = None
     url = None
@@ -25,9 +25,6 @@ class Product(Entity):
             self.category = []
             for cat in category.split(","): # on découpe la string pour récupérer chaque catégorie
                 self.category.append(Category(name=cat)) # pour chaque catégorie récupérée on crée une instance de Category
-
-        if self.stores == "":
-            self.stores = "Non renseigné"
 
     def __str__(self):
         return f"*** {self.name} ***\n Marque: {self.brand}, Nutriscore: {self.nutrition_grade.capitalize()}, Magasins: {self.stores}, Lien: {self.url}"
