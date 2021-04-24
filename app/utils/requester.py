@@ -3,10 +3,10 @@ import requests
 import json
 import unidecode
 
-from settings import CATEGORIES
-from models.product import Product
-from models.category import Category
-from utils.manager import Manager
+from app.settings import CATEGORIES
+from app.models.product import Product
+from app.models.category import Category
+from app.utils.manager import Manager
 
 
 class Requester:
@@ -32,7 +32,7 @@ class Requester:
         cleaned_list = []
         names = set()
         for obj in objects_list:
-            name = unidecode.unidecode(obj.get_name().strip().lower())
+            name = unidecode.unidecode(obj.name.strip().lower())
             if name not in names:
                 cleaned_list.append(obj)
                 names.add(name)

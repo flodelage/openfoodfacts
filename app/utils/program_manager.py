@@ -3,14 +3,14 @@ import random
 
 import mysql.connector
 
-from utils.database import Database
-from utils.requester import Requester
-from templates.interface import Interface
-from models.category import Category
-from models.product import Product
-from models.substitute import Substitute
-from scripts_MySQL.tables import tables_queries
-from settings import DB_NAME
+from app.utils.database import Database
+from app.utils.requester import Requester
+from app.views.interface import Interface
+from app.models.category import Category
+from app.models.product import Product
+from app.models.substitute import Substitute
+from app.scripts_MySQL.tables import tables_queries
+from app.settings import DB_NAME
 
 
 class ProgramManager:

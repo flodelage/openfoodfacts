@@ -1,8 +1,8 @@
 
 import unidecode
-from models.entity import Entity
-from models.category import Category
-from utils.manager import Manager
+from app.models.entity import Entity
+from app.models.category import Category
+from app.utils.manager import Manager
 
 
 class Product(Entity):
@@ -21,10 +21,14 @@ class Product(Entity):
         self.stores = stores
         self.url = url
         self.category = category
+
         if type(category) is str:
             self.category = []
             for cat in category.split(","):
                 self.category.append(Category(name=cat))
+
+        if self.brand == "": self.brand = "Non renseigné"
+        if self.stores == "": self.stores = "Non renseigné"
 
     def __str__(self):
         return f"*** {self.name} ***\n Marque: {self.brand}, Nutriscore: {self.nutrition_grade.capitalize()}, Magasins: {self.stores}, Lien: {self.url}"

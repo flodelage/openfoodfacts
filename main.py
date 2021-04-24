@@ -1,5 +1,5 @@
 
-from utils.program_manager import ProgramManager
+from app.utils.program_manager import ProgramManager
 
 
 prog = ProgramManager()

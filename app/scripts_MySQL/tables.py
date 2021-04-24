@@ -1,5 +1,5 @@
 
-from settings import DB_NAME
+from app.settings import DB_NAME
 
 tables_queries = (
 f"CREATE TABLE {DB_NAME}.product ("\

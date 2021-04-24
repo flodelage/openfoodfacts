@@ -54,7 +54,7 @@ source env/bin/activate
 pip install -r requirements.txt
 ```
 
-5. Vous pouvez modifier le module settings.py:
+5. Vous pouvez modifier le module app/settings.py:
 * les paramètres de vote base de données:
 DB_HOST, DB_USER, DB_PASSWD and DB_NAME
 * la constante CATEGORIES en ajoutant les catégories de votre choix, par exemple: CATEGORIES = ["yaourts-au-miel", "jambons-blancs-fumes",]
