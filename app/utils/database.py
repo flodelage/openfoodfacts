@@ -37,7 +37,7 @@ class Database:
         except:
             print(f"\n Une erreur s'est produite lors de la suppression de la base de données \n")
 
-    def create_schema(self, script):
+    def create_tables(self, script):
         for query in script:
             try:
                 self.cursor.execute(query)

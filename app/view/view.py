@@ -1,7 +1,7 @@
 
 from app.settings import DB_NAME
 
-class Interface:
+class View:
     """
     Responsability: manage the display for the user
     """
@@ -23,12 +23,13 @@ class Interface:
         print("* * * * * * * * * * * * * * * * *")
         print("\n")
 
-    # ----- Home menu -----
+    # ----- DB menu -----
     def db_management_menu(self):
         print("\n"
               " 1- Continuer \n"
               " 2- Recréer la base de données \n"
               " q- Quitter")
+        return self.prompt_choice()
 
     # ----- Categories -----
     def find_or_display_substitute_menu(self):
@@ -36,16 +37,23 @@ class Interface:
               " 1- Trouver un substitut à un aliment \n"
               " 2- Retrouver mes aliments substitués \n"
               " q- Quitter")
+        return self.prompt_choice()
+
+    def show_categories(self, categories):
+        print("\n Sélectionnez une catégorie: \n")
+        for num, category in enumerate(categories):
+            print(f" {num+1}- {category.name.strip()}")
+        return self.prompt_choice()
 
     def url_category(self, category):
         print(f"\n / Catégorie: {category.name} / \n")
 
-    def choose_category(self):
-        print("\n Sélectionnez une catégorie: \n")
-
     # ----- Products -----
-    def choose_product(self):
+    def show_products(self, products):
         print("\n Sélectionnez un produit: \n")
+        for num, product in enumerate(products):
+            print(f" {num+1}- {product.name.strip()}")
+        return self.prompt_choice()
 
     def url_product(self, category, product):
         print(f"\n / Catégorie: {category.name} > Produit: {product.name} /\n")
@@ -56,22 +64,17 @@ class Interface:
     def no_other_nutrition_grade_a(self):
         print("\n Nous n'avons pas d'autres produits ayants le nutriscore A dans cette catégorie ! \n")
 
-    def other_nutrition_grade_a(self):
+    def other_nutrition_grade_a(self, products):
         print("\n Vous pouvez choisir parmi ces produits ayants également le nutriscore A: \n")
+        for num, product in enumerate(products):
+            print(f" {num+1}- {product.name.strip()}")
+        return self.prompt_choice()
 
     def no_better_nutrition_grade(self):
         print("\n Nous n'avons trouvé aucun produit ayant un meilleur nutriscore ! \n")
 
     def choose_substitute(self, product):
         print(f"\n Vous pouvez choisir parmi ces produits ayants un meilleur nutriscore que {product.nutrition_grade.title()}: \n")
-
-    def __convert_into_enumerate_dict(self, objects_list):
-        return {num: obj.name for num, obj in enumerate(objects_list)}
-
-    def show_enumerate_list(self, objects_list):
-        enumerate_dict = self.__convert_into_enumerate_dict(objects_list)
-        for num, obj_name in enumerate_dict.items():
-            print(f" {num+1}- {obj_name.strip()}")
 
     # ----- Substitutes -----
     def no_substitute_saved(self):
@@ -94,13 +97,20 @@ class Interface:
               " 1- Continuer \n"
               " 2- Supprimer ce substitut de vos favoris")
 
-    def show_substitute_enumerate_list(self, objects_list):
-        for num, sub_prod in enumerate(objects_list):
+    def show_saved_substitutes(self, substitutes):
+        for num, sub_prod in enumerate(substitutes):
             print(f" {num+1}- {sub_prod['substitute'].name} (produit substituté: {sub_prod['product'].name})")
+        return self.prompt_choice()
 
-    def show_substitute(self, substitute):
+    def show_better_products(self, products):
+        print("\n Sélectionnez un meilleur produit: \n")
+        for num, product in enumerate(products):
+            print(f" {num+1}- {product.name.strip()}")
+        return self.prompt_choice()
+
+    def show_product(self, product):
         print("\n"
-             f" {substitute}\n")
+             f" {product}\n")
 
     def show_substitute_and_substituted(self, substitute_dict):
         print("\n"

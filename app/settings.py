@@ -9,7 +9,7 @@ DB_NAME = "openfoodfacts"
 CATEGORIES = [
     "yaourts-au-miel",
     "jambons-blancs-fumes",
-    "pates-a-tartiner-aux-noisettes-et-au-cacao",
-    "knacks-industrielles",
-    "pains-de-mie",
+    # "pates-a-tartiner-aux-noisettes-et-au-cacao",
+    # "knacks-industrielles",
+    # "pains-de-mie",
 ]
