@@ -101,25 +101,70 @@ class Controller:
         return better_prod
 
     def save_substitute_process(self, category, product, better_prod):
-        self.view.url_substitute(category, product, better_prod)
         self.view.show_product(better_prod)
         self.view.save_substitute_menu()
-        choice = self.view.prompt_choice()
-        self.view.split()
-        if choice == "1":
-            sub = Substitute(product=product.id,substitute=substitute.id)
-            try:
-                Substitute.objects.save(sub)
-                self.view.save_done(sub)
-                self.view.split()
-            except:
-                self.view.save_fail(sub)
-                self.view.split()
-        elif choice == "2":
-            pass
-        else:
-            self.view.choice_error()
+        choices = ["1", "2"]
+        loop = True
+        while loop:
+            choice = self.view.prompt_choice()
+            if choice not in choices:
+                self.view.choice_error()
+            elif choice == "1":
+                sub = Substitute(product=product.id,substitute=better_prod.id)
+                try:
+                    Substitute.objects.save(sub)
+                    self.view.save_done(sub)
+                    self.view.split()
+                except:
+                    self.view.save_fail(sub)
+                    self.view.split()
+                loop = False
+            elif choice == "2":
+                loop = False
+                return
 
+    def display_and_choose_substitute_process(self):
+        substitute = ""
+        substitutes = Substitute.objects.all()
+        if substitutes == []:
+            self.view.no_substitute_saved()
+            self.view.split()
+        else:
+            substitutes_models = []
+            for sub in substitutes:
+                substitute = Product.objects.filter(id=sub.substitute)[0]
+                product = Product.objects.filter(id=sub.product)[0]
+                substitutes_models.append({"substitute": substitute, "product": product})
+            choice = self.view.show_saved_substitutes(substitutes_models)
+            substitute = substitutes_models[int(choice) - 1]
+            self.view.split()
+            # Display the choosen substitute product / product substituted:
+            self.view.show_substitute_and_substituted(substitute)
+            return substitute
+
+    def delete_substitute_process(self, substitute):
+        choices = ["1", "2", "q"]
+        loop = True
+        while loop:
+            choice = self.view.substitute_management_menu()
+            if choice not in choices:
+                self.view.choice_error()
+            elif choice == "1":
+                loop = False
+                return
+            elif choice == "2":
+                try:
+                    Substitute.objects.delete(substitute = substitute['substitute'].id,
+                                              product= substitute['product'].id)
+                    self.view.delete_done(substitute)
+                except:
+                    self.view.delete_fail(substitute)
+                self.view.split()
+                loop = False
+            elif choice == "q":
+                self.goodbye()
+                loop = False
+        self.view.split()
 
     def find_or_display_substitute_process(self):
         choices = ["1", "2", "q"]
@@ -141,33 +186,16 @@ class Controller:
                     # display better products
                     better_product = self.choose_better_product_process(product=product, category=category)
                     if better_product != "":
+                        self.view.url_substitute(category=category,product=product,better_prod=better_product)
                         # save better product as substitute
                         self.save_substitute_process(category=category,product=product,better_prod=better_product)
                 elif choice == "2":
                     # display saved substitutes
-                    pass
+                    substitute = self.display_and_choose_substitute_process()
+                    if substitute != "":
+                        # display substitute and delete substitute ?
+                        self.delete_substitute_process(substitute)
                 elif choice == "q":
                     self.goodbye()
                 loop = False
         self.view.split()
-
-
-    # def find_substitute_process(self):
-    #     # Display all categories:
-    #     categories = Category.objects.all()
-    #     self.view.choose_category()
-    #     self.view.show_enumerate_list(categories)
-    #     choice = self.view.prompt_choice()
-    #     category = categories[int(choice) - 1]
-    #     self.view.split()
-    #     # Display all products in the choosen category:
-    #     self.view.url_category(category)
-    #     products = Product.objects.filter(category__name = category.name)
-    #     self.view.choose_product()
-    #     self.view.show_enumerate_list(products)
-    #     choice = self.view.prompt_choice()
-    #     product = products[int(choice) - 1]
-    #     self.view.split()
-    #     # Display the choosen product:
-    #     self.view.url_product(category, product)
-

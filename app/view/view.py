@@ -80,22 +80,21 @@ class View:
     def no_substitute_saved(self):
         print("\n Vous n'avez pas de substitut sauvegardé ! \n")
 
-    def choose_saved_substitute(self):
-        print("\n Sélectionnez un substitut: \n")
-
-    def url_substitute(self, category, product, substitute):
-        print(f"\n / Catégorie: {category.name} > Produit: {product.name} > Substitut: {substitute.name} /\n")
+    def url_substitute(self, category, product, better_prod):
+        print(f"\n / Catégorie: {category.name} > Produit: {product.name} > Substitut: {better_prod.name} /\n")
 
     def save_substitute_menu(self):
         print("\n"
               " Voulez-vous sauvegarder ce substitut dans vos favoris ? \n"
               " 1- Oui \n"
               " 2- Non")
+        return self.prompt_choice()
 
     def substitute_management_menu(self):
         print("\n"
               " 1- Continuer \n"
               " 2- Supprimer ce substitut de vos favoris")
+        return self.prompt_choice()
 
     def show_saved_substitutes(self, substitutes):
         for num, sub_prod in enumerate(substitutes):
