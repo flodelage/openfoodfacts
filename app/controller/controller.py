@@ -102,11 +102,10 @@ class Controller:
 
     def save_substitute_process(self, category, product, better_prod):
         self.view.show_product(better_prod)
-        self.view.save_substitute_menu()
         choices = ["1", "2"]
         loop = True
         while loop:
-            choice = self.view.prompt_choice()
+            choice = self.view.save_substitute_menu()
             if choice not in choices:
                 self.view.choice_error()
             elif choice == "1":
@@ -140,7 +139,7 @@ class Controller:
             self.view.split()
             # Display the choosen substitute product / product substituted:
             self.view.show_substitute_and_substituted(substitute)
-            return substitute
+        return substitute
 
     def delete_substitute_process(self, substitute):
         choices = ["1", "2", "q"]
@@ -150,8 +149,7 @@ class Controller:
             if choice not in choices:
                 self.view.choice_error()
             elif choice == "1":
-                loop = False
-                return
+                break
             elif choice == "2":
                 try:
                     Substitute.objects.delete(substitute = substitute['substitute'].id,
@@ -160,14 +158,14 @@ class Controller:
                 except:
                     self.view.delete_fail(substitute)
                 self.view.split()
-                loop = False
+                break
             elif choice == "q":
                 self.goodbye()
-                loop = False
+                break
         self.view.split()
 
     def find_or_display_substitute_process(self):
-        choices = ["1", "2", "q"]
+        choices = ["1", "2"]
         loop = True
         while loop:
             choice = self.find_or_display_substitute_menu()
@@ -195,7 +193,4 @@ class Controller:
                     if substitute != "":
                         # display substitute and delete substitute ?
                         self.delete_substitute_process(substitute)
-                elif choice == "q":
-                    self.goodbye()
-                loop = False
         self.view.split()

@@ -23,11 +23,6 @@ class ProgramManager:
         self.req = Requester()
 
     def run(self):
-        run = True
         self.controller.welcome()
-        while run:
-            """[MAIN MENU]"""
-            self.controller.db_management_menu_process()
-
-            """[SUBSTITUTES MENU]"""
-            self.controller.find_or_display_substitute_process()
+        self.controller.db_management_menu_process()
+        self.controller.find_or_display_substitute_process()

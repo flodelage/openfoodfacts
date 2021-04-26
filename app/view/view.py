@@ -35,8 +35,7 @@ class View:
     def find_or_display_substitute_menu(self):
         print("\n"
               " 1- Trouver un substitut à un aliment \n"
-              " 2- Retrouver mes aliments substitués \n"
-              " q- Quitter")
+              " 2- Retrouver mes aliments substitués")
         return self.prompt_choice()
 
     def show_categories(self, categories):
