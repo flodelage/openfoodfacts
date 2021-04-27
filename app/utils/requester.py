@@ -3,7 +3,7 @@ import requests
 import json
 import unidecode
 
-from app.settings import CATEGORIES
+from app.settings import CATEGORIES, DB_NAME
 from app.models.product import Product
 from app.models.category import Category
 from app.utils.manager import Manager
@@ -30,12 +30,12 @@ class Requester:
 
     def clean_data(self, objects_list):
         cleaned_list = []
-        names = set()
+        names = []
         for obj in objects_list:
             name = unidecode.unidecode(obj.name.strip().lower())
             if name not in names:
                 cleaned_list.append(obj)
-                names.add(name)
+                names.append(name)
         return cleaned_list
 
     def get_data(self):
@@ -63,4 +63,8 @@ class Requester:
                     if params['product_name_fr'] != "" and params['nutrition_grades'] != "" and params['url'] != "" and params['categories'] != "":
                         product = Product(brand=params['brands'], name=params['product_name_fr'], nutrition_grade=params['nutrition_grades'], stores=params['stores'], url=params['url'], category=params['categories'])
                         products_list.append(product)
-        self.manager.save_all(self.clean_data(products_list))
+        try:
+            self.manager.save_all(self.clean_data(products_list))
+            print(f"\n La base de données |{DB_NAME}| a été peuplée \n")
+        except:
+            print(f"\n Une erreur s'est produite lors du peuplement de la base de données \n")

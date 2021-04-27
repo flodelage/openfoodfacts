@@ -27,15 +27,15 @@ class View:
     def db_management_menu(self):
         print("\n"
               " 1- Continuer \n"
-              " 2- Recréer la base de données \n"
-              " q- Quitter")
+              " 2- Recréer la base de données")
         return self.prompt_choice()
 
     # ----- Categories -----
     def find_or_display_substitute_menu(self):
         print("\n"
               " 1- Trouver un substitut à un aliment \n"
-              " 2- Retrouver mes aliments substitués")
+              " 2- Retrouver mes aliments substitués \n"
+              " q- Quitter")
         return self.prompt_choice()
 
     def show_categories(self, categories):

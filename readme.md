@@ -63,3 +63,6 @@ The user launches the program and arrives on the main menu:
 * Select a substitute. The program displays, if any, the substitutes saved by the user as well as the product that was substituted. (Several propositions associated with a digit. The user enters the digit corresponding to the chosen substitute and presses Enter)
 * The program displays the details of the chosen substitute as well as those of the substituted product. Their names, nutriscore, brand, stores and links to OpenFoodFacts pages
 * The user then can removing or not the substitute from his favorites
+
+#### choice 3 - Exit
+* Close the program

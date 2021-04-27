@@ -8,8 +8,9 @@ DB_NAME = "openfoodfacts"
 # Categories
 CATEGORIES = [
     "yaourts-au-miel",
-    "jambons-blancs-fumes",
+    # "jambons-blancs-fumes",
     # "pates-a-tartiner-aux-noisettes-et-au-cacao",
     # "knacks-industrielles",
     # "pains-de-mie",
+    # "biscuits-aperitifs",
 ]

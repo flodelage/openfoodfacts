@@ -40,8 +40,6 @@ class Controller:
                     pass
                 elif choice == "2":
                     self.creation_db()
-                elif choice == "q":
-                    self.goodbye()
                 loop = False
         self.view.split()
 
@@ -113,21 +111,18 @@ class Controller:
                 try:
                     Substitute.objects.save(sub)
                     self.view.save_done(sub)
-                    self.view.split()
                 except:
                     self.view.save_fail(sub)
-                    self.view.split()
                 loop = False
             elif choice == "2":
                 loop = False
-                return
+            self.view.split()
 
     def display_and_choose_substitute_process(self):
         substitute = ""
         substitutes = Substitute.objects.all()
         if substitutes == []:
             self.view.no_substitute_saved()
-            self.view.split()
         else:
             substitutes_models = []
             for sub in substitutes:
@@ -136,9 +131,9 @@ class Controller:
                 substitutes_models.append({"substitute": substitute, "product": product})
             choice = self.view.show_saved_substitutes(substitutes_models)
             substitute = substitutes_models[int(choice) - 1]
-            self.view.split()
             # Display the choosen substitute product / product substituted:
             self.view.show_substitute_and_substituted(substitute)
+        self.view.split()
         return substitute
 
     def delete_substitute_process(self, substitute):
@@ -149,7 +144,7 @@ class Controller:
             if choice not in choices:
                 self.view.choice_error()
             elif choice == "1":
-                break
+                loop = False
             elif choice == "2":
                 try:
                     Substitute.objects.delete(substitute = substitute['substitute'].id,
@@ -157,15 +152,11 @@ class Controller:
                     self.view.delete_done(substitute)
                 except:
                     self.view.delete_fail(substitute)
-                self.view.split()
-                break
-            elif choice == "q":
-                self.goodbye()
-                break
-        self.view.split()
+                loop = False
+            self.view.split()
 
     def find_or_display_substitute_process(self):
-        choices = ["1", "2"]
+        choices = ["1", "2", "q"]
         loop = True
         while loop:
             choice = self.find_or_display_substitute_menu()
@@ -193,4 +184,7 @@ class Controller:
                     if substitute != "":
                         # display substitute and delete substitute ?
                         self.delete_substitute_process(substitute)
+                elif choice == "q":
+                    self.goodbye()
+                    loop = False
         self.view.split()

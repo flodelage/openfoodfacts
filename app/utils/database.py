@@ -42,5 +42,5 @@ class Database:
             try:
                 self.cursor.execute(query)
             except:
-                print(f"\n Une erreur s'est produite lors du peuplement de la base de données \n")
-        print(f"\n La base de données |{DB_NAME}| a été peuplée \n")
+                print(f"\n Une erreur s'est produite lors de la création des tables \n")
+        print(f"\n Les tables ont bien été créées dans la base de données |{DB_NAME}|  \n")
