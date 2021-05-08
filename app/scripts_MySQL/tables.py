@@ -4,10 +4,10 @@ from app.settings import DB_NAME
 tables_queries = (
 f"CREATE TABLE {DB_NAME}.product ("\
 "id INT NOT NULL AUTO_INCREMENT,"\
-"name VARCHAR(120) NOT NULL,"\
-"brand VARCHAR(120),"\
+"name VARCHAR(255) NOT NULL,"\
+"brand VARCHAR(255),"\
 "nutrition_grade VARCHAR(1) NOT NULL,"\
-"stores VARCHAR(120),"\
+"stores VARCHAR(255),"\
 "url VARCHAR(255) NOT NULL,"\
 "PRIMARY KEY (id),"\
 "UNIQUE KEY name_UNIQUE (name))"\
@@ -15,7 +15,7 @@ f"CREATE TABLE {DB_NAME}.product ("\
 
 f"CREATE TABLE {DB_NAME}.category ("\
 "id INT NOT NULL AUTO_INCREMENT,"\
-"name VARCHAR(120) NOT NULL,"\
+"name VARCHAR(255) NOT NULL,"\
 "PRIMARY KEY (id),"\
 "UNIQUE KEY name_UNIQUE (name))"\
 "ENGINE = INNODB",
