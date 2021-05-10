@@ -1,6 +1,6 @@
 
 from app.utils.database import Database
-from app.settings import DB_NAME
+
 
 class Manager():
     """
