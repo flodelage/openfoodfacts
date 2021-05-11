@@ -16,17 +16,37 @@ class Requester:
         self.manager = Manager(self)
 
     def url_to_json(self, category_name):
+        """
+        send a get request to the API in order to
+        return the json concerning a specific category
+        """
         request = requests.get(f"https://fr.openfoodfacts.org/categorie/{category_name}.json")
         return request.json()
 
     def page_to_json(self, category_name, page):
+        """
+        send a get request to the API in order to
+        return the json concerning a specific category page
+        """
         request = requests.get(f"https://fr.openfoodfacts.org/categorie/{category_name}/{page}.json")
         return request.json()
 
     def retrieve_cat_pages_nb(self, json_data):
+        """
+        Determines the nb of pages in the API affected by a category by
+        dividing the nb of total products by the nb of products per page.
+        Then returns the number rounded to the next whole number
+        """
         return round(int(json_data["count"]) / json_data["page_size"]) + 1
 
     def clean_data(self, objects_list):
+        """
+        Sort a list of products so that none have the same name.
+        This avoid SQL errors due to duplications while
+        capital letters or accents make them different.
+        Example: for MySql, Nutella and nutella are identical /
+        Jambon fumé and Jambon fume are identical
+        """
         cleaned_list = []
         names = []
         for obj in objects_list:
@@ -37,6 +57,12 @@ class Requester:
         return cleaned_list
 
     def get_data(self):
+        """
+        Retrieves and processes data from the API.
+        Create the objects.
+        Then inserts them into the database
+        by calling the Manager.save_all() method.
+        """
         products_list = []
         for category in CATEGORIES:
             json_data = self.url_to_json(category)
