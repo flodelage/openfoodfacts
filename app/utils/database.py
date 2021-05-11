@@ -19,6 +19,9 @@ class Database:
         self.cursor = self.connection.cursor(buffered=True)
 
     def create_db(self):
+        """
+        create database and use it
+        """
         creation_query = f"CREATE DATABASE {DB_NAME} CHARACTER SET 'utf8mb4' "
         existence_query = f"USE {DB_NAME}"
         try:
@@ -30,6 +33,9 @@ class Database:
                   "de la création de la base de données \n")
 
     def drop_db(self):
+        """
+        drop database
+        """
         drop_query = f"DROP DATABASE {DB_NAME}"
         try:
             self.cursor.execute(drop_query)
@@ -39,6 +45,9 @@ class Database:
                   "de la suppression de la base de données \n")
 
     def create_tables(self, script):
+        """
+        create the tables by calling an SQL script
+        """
         for query in script:
             try:
                 self.cursor.execute(query)
