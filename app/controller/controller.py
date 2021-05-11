@@ -9,6 +9,10 @@ from app.scripts_MySQL.tables import tables_queries
 
 
 class Controller:
+    """
+    Responsability: Project Control Tower
+    Calls the necessary modules, models, views according to user requests
+    """
     def __init__(self):
         self.view = View()
         self.db = Database()
