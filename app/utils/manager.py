@@ -6,13 +6,17 @@ class Manager():
     """
     Class that interacts with the database.
     It is called by the entities and allows them
-    to make insert, select, delete queries
+    to make insert, select, delete queries.
+    Manager is the link between the models and the database.
     """
     def __init__(self, parent_class):
         self.parent_class = parent_class
         self.db = Database()
 
     def save(self, obj):
+        """
+        saves an object in the database
+        """
         table = obj.table  # store class' table name
         params = obj.__dict__.keys()  # store object's parameters
         args = obj.__dict__.values()  # store object's arguments
@@ -32,6 +36,9 @@ class Manager():
         self.db.connection.commit()
 
     def save_all(self, objects_list):
+        """
+        saves a list of objects in the database
+        """
         for obj in objects_list:
             obj_table = obj.table
             obj_insertion = f"""INSERT INTO {obj_table} ({obj.object_attributes_to_str()})
@@ -57,6 +64,9 @@ class Manager():
         self.db.connection.commit()
 
     def columns(self, class_table):
+        """
+        retrieve and return a table columns list
+        """
         query = f"""SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
                     WHERE TABLE_NAME = '{class_table}'"""
         self.db.cursor.execute(query)
@@ -64,6 +74,9 @@ class Manager():
         return parent_class_cols  # [('id',), ('name',)]
 
     def all(self):
+        """
+        retrieve all records from a table
+        """
         # set parent class params in dict
         parent_class_params = self.parent_class.params()
         # {'brand': None, 'category': [], 'name': None,
@@ -106,6 +119,9 @@ class Manager():
         return objects
 
     def filter(self, **kwargs):
+        """
+        retrieve all table records from the database based on condition(s)
+        """
         main_table = self.parent_class.__name__
         main_table_params_dict = self.parent_class.params()
         second_table = ""
@@ -179,6 +195,9 @@ class Manager():
         return objects
 
     def delete(self, **kwargs):
+        """
+        delete all table records from the database based on condition(s)
+        """
         main_table = self.parent_class.__name__
         filters = "".join(f"{key} = {value} AND " for key, value in kwargs.items())
         query = f"DELETE FROM {main_table} WHERE {filters[:-5]}"
