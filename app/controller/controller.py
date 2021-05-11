@@ -16,19 +16,35 @@ class Controller:
 
     # ----- Greetings -----
     def welcome(self):
+        """
+        Display Hello message in the terminal
+        """
         self.view.welcome()
 
     def goodbye(self):
+        """
+        Display Goodbye message in the terminal
+        """
         self.view.goodbye()
 
     # ----- DB menu -----
     def creation_db(self):
+        """
+        Drop and recreate DB, then insert data
+        """
         self.db.drop_db()
         self.db.create_db()
         self.db.create_tables(tables_queries)
         self.req.get_data()
 
     def db_management_menu_process(self):
+        """
+        [First Main Menu]
+        Display a 2 choices menu in the terminal:
+        1- continue (nothing happens)
+        2- recreation db (Drop and recreate DB, then insert data)
+        Prompt the user until he enters a valid answer
+        """
         choices = ["1", "2", "q"]
         loop = True
         while loop:
@@ -45,9 +61,17 @@ class Controller:
 
     # ----- Find or display substitutes -----
     def find_or_display_substitute_menu(self):
+        """
+        Display second main menu and
+        store and return user input
+        """
         return self.view.find_or_display_substitute_menu()
 
     def choose_category_process(self):
+        """
+        Display categories list, store user choice
+        and return the category chosen
+        """
         categories = Category.objects.all()
         loop = True
         choices = [num+1 for num in range(len(categories))]
@@ -61,6 +85,10 @@ class Controller:
                 return categories[int(choice) - 1]
 
     def choose_product_process(self, category):
+        """
+        Display products list, store user choice
+        and return the product chosen
+        """
         products = Product.objects.filter(category__name=category.name)
         loop = True
         choices = [num+1 for num in range(len(products))]
@@ -74,6 +102,10 @@ class Controller:
                 return products[int(choice) - 1]
 
     def choose_better_product_process(self, product, category):
+        """
+        Manages the substitutes to be suggested to the user
+        according to the product chosen previously
+        """
         better_prod = ""
         if product.nutrition_grade == "a":
             self.view.best_nutrition_grade()
@@ -103,6 +135,13 @@ class Controller:
         return better_prod
 
     def save_substitute_process(self, category, product, better_prod):
+        """
+        [Save Menu]
+        Display a 2 choices menu in the terminal:
+        1- Yes (Save Substitute in Favorites)
+        2- No (Do nothing)
+        Prompt the user until he enters a valid answer
+        """
         self.view.show_product(better_prod)
         choices = ["1", "2"]
         loop = True
@@ -123,6 +162,11 @@ class Controller:
             self.view.split()
 
     def display_and_choose_substitute_process(self):
+        """
+        Displays the saved substitutes.
+        If any, prompt the user to choose one and display details.
+        Return the substitute
+        """
         substitute = ""
         substitutes = Substitute.objects.all()
         if substitutes == []:
@@ -142,6 +186,13 @@ class Controller:
         return substitute
 
     def delete_substitute_process(self, substitute):
+        """
+        [Delete Menu]
+        Display a 2 choices menu in the terminal:
+        1- No (Do nothing)
+        2- Yes (Delete Substitute from Favorites)
+        Prompt the user until he enters a valid answer
+        """
         choices = ["1", "2", "q"]
         loop = True
         while loop:
@@ -161,6 +212,14 @@ class Controller:
             self.view.split()
 
     def find_or_display_substitute_process(self):
+        """
+        [Second Main Menu]
+        Display a 3 choices menu in the terminal:
+        1- find a substitute (launch process)
+        2- check my favorites (launch process)
+        3- quit (close the program)
+        Prompt the user until he enters a valid answer
+        """
         choices = ["1", "2", "q"]
         loop = True
         while loop:
