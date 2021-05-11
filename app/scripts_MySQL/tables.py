@@ -1,6 +1,11 @@
 
 from app.settings import DB_NAME
 
+
+"""
+stores the tables creation script in SQL language
+"""
+
 tables_queries = (
 f"CREATE TABLE {DB_NAME}.product ("\
 "id INT NOT NULL AUTO_INCREMENT,"\
