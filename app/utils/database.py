@@ -11,10 +11,10 @@ class Database:
     """
     def __init__(self):
         self.connection = mysql.connector.connect(
-        host = DB_HOST,
-        user = DB_USER,
-        passwd = DB_PASSWD,
-        database = DB_NAME
+            host=DB_HOST,
+            user=DB_USER,
+            passwd=DB_PASSWD,
+            database=DB_NAME
         )
         self.cursor = self.connection.cursor(buffered=True)
 
@@ -26,7 +26,8 @@ class Database:
             self.cursor.execute(existence_query)
             print(f"\n La base de données |{DB_NAME}| a été créée \n")
         except:
-            print(f"\n Une erreur s'est produite lors de la création de la base de données \n")
+            print("\n Une erreur s'est produite lors "
+                  "de la création de la base de données \n")
 
     def drop_db(self):
         drop_query = f"DROP DATABASE {DB_NAME}"
@@ -34,12 +35,15 @@ class Database:
             self.cursor.execute(drop_query)
             print(f"\n La base de données |{DB_NAME}| a été supprimée \n")
         except:
-            print(f"\n Une erreur s'est produite lors de la suppression de la base de données \n")
+            print("\n Une erreur s'est produite lors "
+                  "de la suppression de la base de données \n")
 
     def create_tables(self, script):
         for query in script:
             try:
                 self.cursor.execute(query)
             except:
-                print(f"\n Une erreur s'est produite lors de la création des tables \n")
-        print(f"\n Les tables ont bien été créées dans la base de données |{DB_NAME}|  \n")
+                print("\n Une erreur s'est produite lors "
+                      "de la création des tables \n")
+        print("\n Les tables ont bien été créées "
+              f"dans la base de données |{DB_NAME}|  \n")

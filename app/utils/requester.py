@@ -1,11 +1,9 @@
 
 import requests
-import json
 import unidecode
 
 from app.settings import CATEGORIES, DB_NAME
 from app.models.product import Product
-from app.models.category import Category
 from app.utils.manager import Manager
 
 
@@ -41,11 +39,11 @@ class Requester:
     def get_data(self):
         products_list = []
         for category in CATEGORIES:
-            json_data = self.url_to_json(category) # store json from category url
-            pages_nb = self.retrieve_cat_pages_nb(json_data) # store the number of pages for the category
+            json_data = self.url_to_json(category)
+            pages_nb = self.retrieve_cat_pages_nb(json_data)
             for page in range(pages_nb):
-                page_json_data = self.page_to_json(category, page+1) # store the current page for the category
-                products = page_json_data["products"] # store the products for the current page
+                page_json_data = self.page_to_json(category, page+1)
+                products = page_json_data["products"]
                 for p in products:
                     params = {
                         'brands': "",
@@ -61,10 +59,15 @@ class Requester:
                         except KeyError:
                             continue
                     if params['product_name_fr'] != "" and params['nutrition_grades'] != "" and params['url'] != "" and params['categories'] != "":
-                        product = Product(brand=params['brands'], name=params['product_name_fr'], nutrition_grade=params['nutrition_grades'], stores=params['stores'], url=params['url'], category=params['categories'])
+                        product = Product(brand=params['brands'],
+                                          name=params['product_name_fr'],
+                                          nutrition_grade=params['nutrition_grades'],
+                                          stores=params['stores'], url=params['url'],
+                                          category=params['categories'])
                         products_list.append(product)
         try:
             self.manager.save_all(self.clean_data(products_list))
             print(f"\n La base de données |{DB_NAME}| a été peuplée \n")
         except:
-            print(f"\n Une erreur s'est produite lors du peuplement de la base de données \n")
+            print("\n Une erreur s'est produite lors "
+                  "du peuplement de la base de données \n")

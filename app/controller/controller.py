@@ -61,7 +61,7 @@ class Controller:
                 return categories[int(choice) - 1]
 
     def choose_product_process(self, category):
-        products = Product.objects.filter(category__name = category.name)
+        products = Product.objects.filter(category__name=category.name)
         loop = True
         choices = [num+1 for num in range(len(products))]
         while loop:
@@ -77,22 +77,26 @@ class Controller:
         better_prod = ""
         if product.nutrition_grade == "a":
             self.view.best_nutrition_grade()
-            better_products = Product.objects.filter(nutrition_grade = product.nutrition_grade, category__name = category.name)
+            better_products = Product.objects.filter(nutrition_grade=product.nutrition_grade,
+                                                     category__name=category.name)
             if len(better_products) <= 1:
                 self.view.no_other_nutrition_grade_a()
             else:
                 for better_prod in better_products:
-                    if better_prod.name == product.name: better_products.remove(better_prod)
+                    if better_prod.name == product.name:
+                        better_products.remove(better_prod)
                 choice = self.view.other_nutrition_grade_a(better_products)
                 better_prod = better_products[int(choice) - 1]
                 self.view.split()
         else:
-            better_products = Product.objects.filter(nutrition_grade__lt = product.nutrition_grade, category__name = category.name)
+            better_products = Product.objects.filter(nutrition_grade__lt=product.nutrition_grade,
+                                                     category__name=category.name)
             if len(better_products) == 0:
                 self.view.no_better_nutrition_grade()
             else:
                 self.view.show_product(product)
-                better_products = Product.objects.filter(nutrition_grade__lt = product.nutrition_grade, category__name = category.name)
+                better_products = Product.objects.filter(nutrition_grade__lt=product.nutrition_grade,
+                                                         category__name=category.name)
                 choice = self.view.show_better_products(better_products)
                 better_prod = better_products[int(choice) - 1]
                 self.view.split()
@@ -107,7 +111,7 @@ class Controller:
             if choice not in choices:
                 self.view.choice_error()
             elif choice == "1":
-                sub = Substitute(product=product.id,substitute=better_prod.id)
+                sub = Substitute(product=product.id, substitute=better_prod.id)
                 try:
                     Substitute.objects.save(sub)
                     self.view.save_done(sub)
@@ -128,7 +132,8 @@ class Controller:
             for sub in substitutes:
                 substitute = Product.objects.filter(id=sub.substitute)[0]
                 product = Product.objects.filter(id=sub.product)[0]
-                substitutes_models.append({"substitute": substitute, "product": product})
+                substitutes_models.append({"substitute": substitute,
+                                           "product": product})
             choice = self.view.show_saved_substitutes(substitutes_models)
             substitute = substitutes_models[int(choice) - 1]
             # Display the choosen substitute product / product substituted:
@@ -147,8 +152,8 @@ class Controller:
                 loop = False
             elif choice == "2":
                 try:
-                    Substitute.objects.delete(substitute = substitute['substitute'].id,
-                                              product= substitute['product'].id)
+                    Substitute.objects.delete(substitute=substitute['substitute'].id,
+                                              product=substitute['product'].id)
                     self.view.delete_done(substitute)
                 except:
                     self.view.delete_fail(substitute)
@@ -163,7 +168,7 @@ class Controller:
             if choice not in choices:
                 self.view.choice_error()
             else:
-                if choice == "1": # find a substitute
+                if choice == "1":  # find a substitute
                     # display categories
                     category = self.choose_category_process()
                     # display choosen category
@@ -171,13 +176,18 @@ class Controller:
                     # display products
                     product = self.choose_product_process(category=category)
                     # display choosen product
-                    self.view.url_product(category=category,product= product)
+                    self.view.url_product(category=category, product=product)
                     # display better products
-                    better_product = self.choose_better_product_process(product=product, category=category)
+                    better_product = self.choose_better_product_process(product=product,
+                                                                        category=category)
                     if better_product != "":
-                        self.view.url_substitute(category=category,product=product,better_prod=better_product)
+                        self.view.url_substitute(category=category,
+                                                 product=product,
+                                                 better_prod=better_product)
                         # save better product as substitute
-                        self.save_substitute_process(category=category,product=product,better_prod=better_product)
+                        self.save_substitute_process(category=category,
+                                                     product=product,
+                                                     better_prod=better_product)
                 elif choice == "2":
                     # display saved substitutes
                     substitute = self.display_and_choose_substitute_process()

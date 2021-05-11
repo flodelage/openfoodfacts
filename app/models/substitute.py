@@ -2,6 +2,7 @@
 from app.models.entity import Entity
 from app.utils.manager import Manager
 
+
 class Substitute(Entity):
     table = "substitute"
     product = None

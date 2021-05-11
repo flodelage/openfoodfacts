@@ -15,15 +15,15 @@ class Entity():
         obj_values = ""
         for attribute in self.__dict__.keys():
             if type(self.__dict__[attribute]) is not list:
-                obj_values += f""" "{self.__dict__[attribute].strip()}" """ + ","
+                obj_values += f" '{self.__dict__[attribute].strip()}' " + ","
         return obj_values[:-1:]
 
     @classmethod
     def params(cls):
-        attributes = inspect.getmembers(cls, lambda attr:not(inspect.isroutine(attr)))
-        filtered_attributes = dict( [attr for attr in attributes if not(attr[0].startswith('__') and attr[0].endswith('__'))] )
+        attributes = inspect.getmembers(cls, lambda attr: not(inspect.isroutine(attr)))
+        filtered_attributes = dict([attr for attr in attributes if not(attr[0].startswith('__') and attr[0].endswith('__'))])
         return {
             key: value
             for key, value in filtered_attributes.items()
-            if value is None or (isinstance(value, list) == True)
+            if value is None or (isinstance(value, list))
         }
