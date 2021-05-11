@@ -23,6 +23,9 @@ class Product(Entity):
         self.url = url
         self.category = category
 
+        #  Plit the string containing the product categories
+        # then create the instances by adding them to the category attribute
+        # which has become a list
         if type(category) is str:
             self.category = []
             for cat in category.split(","):
@@ -35,6 +38,9 @@ class Product(Entity):
             self.stores = "Non renseigné"
 
     def __str__(self):
+        """
+        Default string that returns the details of a product
+        """
         return f"*** {self.name} ***\n" \
                f"Marque: {self.brand}, " \
                f"Nutriscore: {self.nutrition_grade.capitalize()}, " \
